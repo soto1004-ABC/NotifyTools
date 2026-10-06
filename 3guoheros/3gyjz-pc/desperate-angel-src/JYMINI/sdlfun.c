@@ -805,8 +805,6 @@ int PausedMIDI() { return 0; }
 int ResumeMIDI() { return 0; }
 
 
-//播放音效
-// 播放音效 (스위치 포팅용 안전 처리)
 int JY_PlayWAV(const char *filename)
 {
     if (g_EnableSound == 0)
@@ -815,31 +813,7 @@ int JY_PlayWAV(const char *filename)
     // 스위치 빌드 성공을 위해 임시로 오디오 출력을 안전하게 패스합니다.
     return 0;
 }
-/*
-	if(g_EnableSound==0)
-			return 1;
-
-	if(WavChunk[currentWav]){          //释放当前音效
-		Mix_FreeChunk(WavChunk[currentWav]);
-		WavChunk[currentWav]=NULL;
-	}
-
-	WavChunk[currentWav]= Mix_LoadWAV(filename);  //加载到当前音效
-
-	if(WavChunk[currentWav]){
-		Mix_VolumeChunk(WavChunk[currentWav],g_SoundVolume);
-		Mix_PlayChannel(-1, WavChunk[currentWav], 0);  //播放音效
-		currentWav++;
-		if(currentWav>=WAVNUM)
-			currentWav=0;
-	}
-	else{
-		JY_Error("Open wav file %s failed!",filename);
-	}
-*/
-	return 0;
-	
-}
+// <- 여기서 함수가 딱 끝나는 게 정답입니다!
 
 int JY_GetKey(int *EventType, int *keyPress, int *x, int *y)
 {
