@@ -9,6 +9,18 @@
 #include <string.h>
 #include <stdlib.h>
 
+int main(int argc, char *argv[])
+{
+    // --- 이 위치에 작업 디렉토리 강제 고정 코드 추가 ---
+#ifdef __SWITCH__
+    // 스위치 환경일 경우 .nro와 리소스가 위치한 SD 카드 폴더로 경로 강제 이동
+    chdir("sdmc:/switch/3guohero");
+#endif
+
+    // 기존 초기화 코드들...
+    InitSDL();
+    ...
+}
 // 全程变量
 
 SDL_Window* g_window;
