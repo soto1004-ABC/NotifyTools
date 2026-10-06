@@ -274,16 +274,16 @@ int main_android()
 	
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 	
-	// 스위치 화면 크기에 맞춰 풀스크린 창 생성
+	// ⭐ 스위치 화면 크기를 확실하게 잡기 위해 가로/세로를 0으로 주고 하드웨어 가속 플래그를 명시합니다.
 	g_window = SDL_CreateWindow("JY_LLK",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		1280, 720,
-		SDL_WINDOW_FULLSCREEN_DESKTOP);
+		0, 0,
+		SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_SHOWN);
 		
 	g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	
-	// 논리적 해상도를 1280x720으로 확실히 고정하여 화면 왜곡 및 작게 나오는 현상 방지
+	// ⭐ 스위치 화면 스케일을 1280x720 뷰포트에 강제로 꽉 채우도록 설정
 	SDL_RenderSetLogicalSize(g_renderer, 1280, 720);
 
 	Uint8 done = 0;
@@ -308,7 +308,6 @@ int main_android()
 
 	exit(0);
 }
-
 // 主程序入口
 int main(int argc, char *argv [])
 {
