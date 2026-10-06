@@ -312,24 +312,26 @@ void draw3()
 
 int main_android()
 {
-	// 스위치 표준 해상도인 1280x720으로 설정
 	device_w = g_ScreenW = 1280;
 	device_h = g_ScreenH = 720;
 	
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
+	
+	// 창 생성 (1280x720)
 	g_window = SDL_CreateWindow("JY_LLK",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		1280, 720,
 		0);
+		
 	g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	
-	// 텍스처 크기도 1280x720으로 일치시킴
+	// ⭐ 핵심: 논리적 해상도(Logical Size)를 1280x720으로 고정합니다.
+	// 이렇게 하면 스위치가 어떤 화면 크기로 출력하든 내부 렌더링을 자동으로 전체 화면으로 늘려줍니다.
+	SDL_RenderSetLogicalSize(g_renderer, 1280, 720);
+	
 	g_screenTex = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 1280, 720);
 	SDL_SetTextureBlendMode(g_screenTex, SDL_BLENDMODE_BLEND);
-	
-	// 렌더 스케일 비율을 1.0(1대1 꽉 찬 화면)으로 정렬
-	SDL_RenderSetScale(g_renderer, 1.0f, 1.0f);
 	
 	SDL_SetRenderTarget(g_renderer, g_screenTex);
 	SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
@@ -340,7 +342,6 @@ int main_android()
 	SDL_Event event;
 	while (!done)
 	{
-		/* Check for events */
 		while (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT || event.type == SDL_KEYDOWN || event.type == SDL_FINGERDOWN)
@@ -349,10 +350,8 @@ int main_android()
 			}
 		}
 
-		// 기존 그리기 함수 호출
 		draw3();
 
-		/* Update the screen! */
 		SDL_RenderPresent(g_renderer);
 
 		SDL_Delay(10);
@@ -360,6 +359,7 @@ int main_android()
 
 	exit(0);
 }
+
 // 主程序入口
 int main(int argc, char *argv [])
 {
