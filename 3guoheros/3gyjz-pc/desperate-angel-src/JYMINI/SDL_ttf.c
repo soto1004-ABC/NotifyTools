@@ -2196,7 +2196,7 @@ int TTF_WasInit( void )
     return TTF_initialized;
 }
 
-int TTF_GetFontKerningSize(TTF_Font *font, Uint16 previous_ch, Uint16 ch)
+int TTF_GetFontKerningSize(TTF_Font *font, int previous_ch, int ch)
 {
     int error;
     int glyph_index, prev_index;
