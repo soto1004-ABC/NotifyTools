@@ -19,7 +19,7 @@ ASFLAGS	:=	-g $(ARCH)
 LDFLAGS = -specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -L$(DEVKITPRO)/portlibs/switch/lib -L$(DEVKITPRO)/libnx -Wl,-Map,$(notdir $*.map)
 
 # 안정화된 라이브러리 링크 순서 (glapi 제거 및 컴파일러 런타임 맨 뒤 배치)
-LIBS := -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lSDL2 -lEGL -lGLESv2 -lnouveau -lfreetype -lharfbuzz -lbz2 -lz -lpng -lstdc++ -lgcc -lc
+LIBS := -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lSDL2 -lfreetype -lharfbuzz -lbz2 -lz -lpng -lstdc++ -lgcc -lc
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
