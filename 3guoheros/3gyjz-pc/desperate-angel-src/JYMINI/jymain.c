@@ -1,4 +1,3 @@
-
 // 主程序
 // 本程序为游泳的鱼编写。
 // 版权所无，您可以以任何方式使用代码
@@ -10,24 +9,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(int argc, char *argv[])
-{
-    // 반드시 변수 선언보다 맨 처음에 위치해야 문법 에러가 나지 않습니다.
-#ifdef __SWITCH__
-    chdir("sdmc:/switch/3guohero");
-#endif
-
-    // 기존에 있던 변수 선언들과 코드들...
-    int i = 0;
-    // ...
-
 // 全程变量
 
 SDL_Window* g_window;
 SDL_Renderer* g_renderer;
 SDL_Texture* g_screenTex;
 
-int g_ScreenW=480 ;          // 屏幕宽高
+int g_ScreenW=480 ;         // 屏幕宽高
 int g_ScreenH=800 ;
 int device_w=480 ;
 int device_h=800 ;
@@ -41,7 +29,7 @@ int g_XScale=18;             //贴图x,y方向一半大小
 int g_YScale=9;
 
 //各个地图绘制时xy方向需要多绘制的余量。保证可以全部显示
-int g_MMapAddX;              
+int g_MMapAddX;             
 int g_MMapAddY;
 int g_SMapAddX;
 int g_SMapAddY;
@@ -55,7 +43,7 @@ int g_MAXCacheNum=1000;     //最大缓存数量
 
 static int IsDebug=0;         //是否打开跟踪文件
 int g_LoadFullS=1;          //是否全部加载S文件
-int g_LoadMMapType=0;          //是否全部加载M文件
+int g_LoadMMapType=0;         //是否全部加载M文件
 int g_LoadMMapScope=0;       
 int g_PreLoadPicGrp=0;      //是否预先加载贴图文件的grp
 
@@ -111,7 +99,7 @@ static const struct luaL_Reg jylib [] = {
       {"CharSet", HAPI_CharSet},
       {"DrawStr", HAPI_DrawStr},
 
-      
+     
       {"SetClip",HAPI_SetClip},
       {"FillColor", HAPI_FillColor},
 	  { "Background", HAPI_Background },
@@ -137,7 +125,7 @@ static const struct luaL_Reg jylib [] = {
       {"PlayMIDI", HAPI_PlayMIDI},
       {"PlayWAV", HAPI_PlayWAV},
       {"PlayMPEG", HAPI_PlayMPEG},
-      
+     
 	  {"LoadMMap", HAPI_LoadMMap},
       {"DrawMMap", HAPI_DrawMMap},
       {"GetMMap", HAPI_GetMMap},
@@ -202,8 +190,8 @@ static void GetModes (int *width, int *height)
 	FILE *fp = fopen(_("resolution.txt"), "r");
 
   if (!fp) {
-      JY_Error("GetModes: cannot open resolution.txt");
-      return ;
+     JY_Error("GetModes: cannot open resolution.txt");
+     return ;
   }
   
   //宽
@@ -307,7 +295,7 @@ void draw2(SDL_Window* window, SDL_Renderer* renderer, const Sprite sprite)
 void draw3()
 {
 	int w, h;
-	 
+	  
 	SDL_Rect destRect = { 312,148,142,110 };// {w/2 - sprite.w/2, h/2 - sprite.h/2, sprite.w, sprite.h};
 	JY_SetClip(312, 148, 312 + 142, 148 + 7 + 24 * 7);
 	JY_LoadPicColor(4, 120, 312, 148, 1, 0, -1, 0, 0);
@@ -324,17 +312,6 @@ void draw3()
 
 int main_android()
 {
-	//SDL_Window *window;
-	//SDL_Renderer *renderer;
-
- 
-	/*av_register_all();*/
-	//LOGI("%s\n", avcodec_configuration());
-
-	/*
-	if(SDL_CreateWindowAndRenderer(768, 480, 0, &window, &renderer) < 0)
-		exit(2);
-	*/
 	device_w = g_ScreenW=768;
 	device_h = g_ScreenH=480;
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
@@ -343,7 +320,6 @@ int main_android()
 		1280, 800,
 		0);
 	g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_PRESENTVSYNC);
-	//g_screenTex = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, g_ScreenW, g_ScreenH);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	g_screenTex = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 1280, 800);
 	SDL_SetTextureBlendMode(g_screenTex, SDL_BLENDMODE_BLEND);
@@ -369,11 +345,6 @@ int main_android()
 			}
 		}
 
-
-		/* Draw a gray background
-		SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
-		SDL_RenderClear(renderer);*/
-
 		draw2(g_window, g_renderer, sprite);
 
 		/* Update the screen! */
@@ -385,15 +356,15 @@ int main_android()
 	exit(0);
 }
 
-//#define sftest 1
-// 主程序
+// 主程序入口
 int main(int argc, char *argv [])
 {
+	// 스위치 환경에서 SD 카드 내 게임 폴더로 작업 경로 강제 고정
+#ifdef __SWITCH__
+	chdir("sdmc:/switch/3guohero");
+#endif
 
 	lua_State *pL_main;
-
-	//GetModes(&g_ScreenW,&g_ScreenH);
-	//	__android_log_print(ANDROID_LOG_INFO, "jy", "path = %s", JY_CurrentPath);
 
 	remove(_(DEBUG_FILE));
 	remove(_(ERROR_FILE));    //设置stderr输出到文件
@@ -422,72 +393,16 @@ int main(int argc, char *argv [])
 	JY_Debug("InitSDL();");
 	InitSDL();           //初始化SDL
 
-	
-
-#ifdef sftest
-	
-	JY_PicLoadFile("./data/mmap.idx", "./data/mmap.grp", 0, 100, 100);
-	JY_PicLoadFile("./data/wmap.idx", "./data/wmap.grp", 1, 100, 100);
-	JY_PicLoadFile("./data/hdgrp.idx", "./data/hdgrp.grp", 2, 100, 100);
-
-	JY_PicLoadFile("./data/ui.idx", "./data/ui.grp", 4, 100, 100);
-	JY_PicLoadFile("./data/smap.idx", "./data/smap.grp", 5, 100, 100);
-	JY_PicLoadFile("./data/wmap.idx", "./data/mwmapmap.grp", 11, 200, 200);
-	main_android();
-	exit(0);
-#endif // sftest
-
-
 	JY_Debug("InitGame();");
 	InitGame();          //初始化游戏数据
-
 
 	g_WarMoveTex[0] = createPolygonTexture(255, 255, 255, 128);
 	g_WarMoveTex[1] = createPolygonTexture(255, 255, 255, 64);
 	g_WarMoveTex[2] = createPolygonTexture(0, 0, 0, 128);
 	g_WarMoveTex[3] = createPolygonTexture(0, 0, 0, 64);
 
-
 	JY_Debug("LoadMB();");
 	LoadMB(_(HZMB_FILE));  //加载汉字字符集转换码表
-
-
-#if 0
-	JY_PicLoadFile("./data/mmap.idx", "./data/mmap.grp", 0, 100, 100);
-	JY_PicLoadFile("./data/wmap.idx", "./data/wmap.grp", 1, 100, 100);
-	JY_PicLoadFile("./data/hdgrp.idx", "./data/hdgrp.grp", 2, 100, 100);
-
-	JY_PicLoadFile("./data/ui.idx", "./data/ui.grp", 4, 100, 100);
-	JY_PicLoadFile("./data/smap.idx", "./data/smap.grp", 5, 100, 100);
-	JY_PicLoadFile("./data/wmap.idx", "./data/mwmapmap.grp", 11, 200, 200);
-	/* Main render loop */
-	Uint8 done = 0;
-	SDL_Event event;
-	while (!done)
-	{
-		/* Check for events */
-		while (SDL_PollEvent(&event))
-		{
-			if (event.type == SDL_QUIT || event.type == SDL_KEYDOWN || event.type == SDL_FINGERDOWN)
-			{
-				done = 1;
-			}
-		}
-
-
-		/* Draw a gray background
-		SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
-		SDL_RenderClear(renderer);*/
-
-		 
-		draw3();
-
-		/* Update the screen! */
-		SDL_RenderPresent(g_renderer);
-
-		SDL_Delay(10);
-	}
-#endif
 
 	JY_Debug("Lua_Main();");
 	Lua_Main(pL_main);          //调用Lua主函数，开始游戏
@@ -511,16 +426,6 @@ int Lua_Main(lua_State *pL_main)
 {
 	int result=0; 
 
-	//初始化lua
- 
-    //注册lua函数
-    //luaL_register(pL_main,"lib", jylib);
-    //luaL_register(pL_main, "Byte", bytelib);
-
-
-
-
-
 	//加载lua文件
     result=luaL_loadfile(pL_main, JYMain_Lua);
     switch(result){
@@ -541,9 +446,6 @@ int Lua_Main(lua_State *pL_main)
    	lua_getglobal(pL_main,"JY_Main");
 	result=lua_pcall(pL_main,0,0,0);
 
- 
-   
-
 	return 0;
 }
 
@@ -552,9 +454,6 @@ int Lua_Main(lua_State *pL_main)
 int Lua_Config(lua_State *pL, const char *filename)
 {
 	int result = 0;
-
-
-
 
 	//加载lua配置文件
 	result = luaL_loadfile(pL, filename);
@@ -576,11 +475,9 @@ int Lua_Config(lua_State *pL, const char *filename)
 
 	if (getfield(pL, "Width") != 0){
 		g_ScreenW = getfield(pL, "Width");
-		//device_w = g_ScreenW;
 	}
 	if (getfield(pL, "Height") != 0){
 		g_ScreenH = getfield(pL, "Height");
-		//device_h = g_ScreenH;
 	}
 	g_ScreenBpp = getfield(pL, "bpp");
 	g_FullScreen = getfield(pL, "FullScreen");
@@ -657,7 +554,6 @@ int getfield(lua_State *pL,const char *key)
 //读取lua表中的字符串
 int getfieldstr(lua_State *pL,const char *key,char *str)
 {
- 
 	const char *tmp;
 	lua_getfield(pL,-1,key);
 	tmp=(const char *)lua_tostring(pL,-1);
@@ -674,16 +570,9 @@ int System_Paused()
 
 int System_Resume()
 {
-//	ResumeMIDI();
-
 	JY_ShowSurface(0);
 	return 0;
 }
-
-
-
-//以下为几个通用函数
-
 
 
 // 调试函数
@@ -695,7 +584,6 @@ int JY_Debug(const char * fmt,...)
     struct tm *newtime;
     va_list argptr;
 	char string[1024];
-	// concatenate all the arguments in one string
 	va_start(argptr, fmt);
 	vsnprintf(string, sizeof(string), fmt, argptr);
 	va_end(argptr);
@@ -706,13 +594,13 @@ int JY_Debug(const char * fmt,...)
 	if (fp){
 		time(&t);
 		newtime = localtime(&t);
-		// __android_log_print(ANDROID_LOG_INFO, "jy", "%02d:%02d:%02d %s\r\n",newtime->tm_hour,newtime->tm_min,newtime->tm_sec,string);
 		fprintf(fp, "%02d:%02d:%02d %s\r\n", newtime->tm_hour, newtime->tm_min, newtime->tm_sec, string);
 		fclose(fp);
 		printf("%02d:%02d:%02d %s\r\n", newtime->tm_hour, newtime->tm_min, newtime->tm_sec, string);
 	}
 	return 0;
 }
+
 // 调试函数
 // 输出到error.txt中
 int JY_Error(const char * fmt,...)
@@ -731,7 +619,6 @@ int JY_Error(const char * fmt,...)
 	if (fp){
 		time(&t);
 		newtime = localtime(&t);
-		//__android_log_print(ANDROID_LOG_INFO, "jy", "%02d:%02d:%02d %s\n",newtime->tm_hour,newtime->tm_min,newtime->tm_sec,string);
 		fprintf(fp, "%02d:%02d:%02d %s\n", newtime->tm_hour, newtime->tm_min, newtime->tm_sec, string);
 		fclose(fp);
 	}
@@ -748,8 +635,6 @@ int limitX(int x, int xmin, int xmax)
 	return x;
 }
 
-
-
 // 返回文件长度，若为0，则文件可能不存在
 int FileLength(const char *filename)
 {
@@ -764,26 +649,7 @@ int FileLength(const char *filename)
 	return ll;
 }
 
-char *
-va(
-   const char *format,
-   ...
-)
-/*++
-  Purpose:
-
-    Does a varargs printf into a temp buffer, so we don't need to have
-    varargs versions of all text functions.
-
-  Parameters:
-
-    format - the format string.
-
-  Return value:
-
-    Pointer to the result string.
-
---*/
+char * va(const char *format, ...)
 {
    static char string[256];
    va_list     argptr;
@@ -794,4 +660,3 @@ va(
 
    return string;
 }
-
