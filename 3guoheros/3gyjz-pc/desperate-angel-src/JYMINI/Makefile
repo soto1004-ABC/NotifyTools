@@ -1,15 +1,22 @@
+# --- 스위치 전용 룰 및 컴파일러 불러오기 ---
+ifeq ($(strip $(DEVKITPRO)),)
+$(error "Please set DEVKITPRO in your environment.")
+endif
+include $(DEVKITPRO)/libnx/switch_rules
+
 TARGET		:= 3guohero_switch
 BUILD		:= build
 SOURCES		:= .
 INCLUDES	:= .
 
 ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE
-CFLAGS	:=	-g -Wall -O2 -ffunction-sections $(ARCH)
-CFLAGS	+=	-I$(PORTLIBS)/include/SDL2 -I$(PORTLIBS)/include -I$(LIBNX)/include -D__SWITCH__
+CFLAGS	:=	-g -Wall -O2 -ffunction-sections $(ARCH) -D__SWITCH__
+CFLAGS	+=	-I$(PORTLIBS)/include/SDL2 -I$(PORTLIBS)/include -I$(LIBNX)/include
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(LIBNX)/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 LIBS	:=	-lSDL2_ttf -lSDL2_image -lSDL2_mixer -lSDL2 -lfreetype -lpng -lbz2 -lz -lnx -lm
+LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
@@ -20,7 +27,8 @@ CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 export LD	:=	$(CXX)
 export OFILES	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
-export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) -I$(CURDIR)/$(BUILD)
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) $(foreach dir,$(LIBDIRS),-I$(dir)/include) -I$(CURDIR)/$(BUILD)
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 .PHONY: $(BUILD) clean all
 
@@ -36,7 +44,19 @@ clean:
 
 else
 DEPENDS	:=	$(OFILES:.o=.d)
+
 $(OUTPUT).nro	:	$(OUTPUT).elf
 $(OUTPUT).elf	:	$(OFILES)
+	@echo linking $(notdir $@)
+	@$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+
+%.o: %.c
+	@echo $(notdir $<)
+	@$(CC) -MMD -MP -MF $*.d $(CFLAGS) $(INCLUDE) -c $< -o $@
+
+%.o: %.cpp
+	@echo $(notdir $<)
+	@$(CXX) -MMD -MP -MF $*.d $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+
 -include $(DEPENDS)
 endif
