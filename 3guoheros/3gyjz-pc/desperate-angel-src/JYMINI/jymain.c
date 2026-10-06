@@ -12,13 +12,15 @@
 
 int main(int argc, char *argv[])
 {
+    // 반드시 변수 선언보다 맨 처음에 위치해야 문법 에러가 나지 않습니다.
 #ifdef __SWITCH__
     chdir("sdmc:/switch/3guohero");
 #endif
 
-    // 기존 코드들 이어서 작성...
-    return 0;
-}
+    // 기존에 있던 변수 선언들과 코드들...
+    int i = 0;
+    // ...
+
 // 全程变量
 
 SDL_Window* g_window;
