@@ -9,14 +9,12 @@ jobs:
   build-switch:
     runs-on: ubuntu-latest
     container:
-      # 기존 devkita64 대신 모든 라이브러리가 포함된 devkitswitch 사용
-      image: devkitpro/devkitswitch:latest
+      # 원본 이미지로 복구 (이 안에 SDL2가 이미 다 들어있습니다)
+      image: devkitpro/devkita64:latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      # 차단당하는 라이브러리 다운로드 단계(dkp-pacman) 삭제
 
       - name: Compile NRO
         run: |
