@@ -1,10 +1,13 @@
  
-// Óëlua¿âµÄ½»»¥º¯Êı,Ê¹ÓÃlua5.1.2°æ
+// ä¸luaåº“çš„äº¤äº’å‡½æ•°,ä½¿ç”¨lua5.1.2ç‰ˆ
 
 
   
 #include <stdio.h>
 #include <string.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/stat.h>
 #ifdef __SYMBIAN32__
 #include <stdlib.h>
 #else
@@ -29,11 +32,11 @@ extern int g_MusicVolume;
 extern int g_SoundVolume;
 extern char JY_CurrentPath[512];
 time_t ticks = 0;
-//ÒÔÏÂÎªËùÓĞ°ü×°µÄlua½Ó¿Úº¯Êı£¬¶ÔÓ¦ÓÚÃ¿¸öÊµ¼ÊµÄº¯Êı
+//ä»¥ä¸‹ä¸ºæ‰€æœ‰åŒ…è£…çš„luaæ¥å£å‡½æ•°ï¼Œå¯¹åº”äºæ¯ä¸ªå®é™…çš„å‡½æ•°
 
 int HAPI_DrawStr(lua_State *pL)
 {
-	int n = lua_gettop(pL);			//µÃµ½²ÎÊıµÄ³¤¶È
+	int n = lua_gettop(pL);			//å¾—åˆ°å‚æ•°çš„é•¿åº¦
     int x=(int)lua_tonumber(pL,1);
 	int y=(int)lua_tonumber(pL,2);
 	const char *str=lua_tostring(pL,3);
@@ -125,7 +128,7 @@ int HAPI_ShowSlow(lua_State *pL)
 
 int HAPI_LoadPicture(lua_State *pL)
 {
-	 int n = lua_gettop(pL);			//µÃµ½²ÎÊıµÄ³¤¶È
+	 int n = lua_gettop(pL);			//å¾—åˆ°å‚æ•°çš„é•¿åº¦
 	const char *str=lua_tostring(pL,1);
  
 
@@ -133,7 +136,7 @@ int HAPI_LoadPicture(lua_State *pL)
 	int x=(int)lua_tonumber(pL,2);
 	int y=(int)lua_tonumber(pL,3);
  
-	//À¶ÑÌÇå£º´«Èë±ÈÀı
+	//è“çƒŸæ¸…ï¼šä¼ å…¥æ¯”ä¾‹
 	int percent = 0;
 	if (n > 3)
 	{
@@ -157,7 +160,7 @@ int HAPI_LoadConfig(lua_State *pL)
     SDL_DestroyTexture(g_screenTex);
     SDL_DestroyRenderer(g_renderer);
     SDL_DestroyWindow(g_window);
-    InitGame();           //³õÊ¼»¯
+    InitGame();           //åˆå§‹åŒ–
 	return 0;
 }
 int HAPI_LoadSoundConfig(lua_State *pL)
@@ -345,12 +348,12 @@ int HAPI_PicInit(lua_State *pL)
 
 int HAPI_PicLoadFile(lua_State *pL)
 {
-	int n = lua_gettop(pL);			//µÃµ½²ÎÊıµÄ³¤¶È
+	int n = lua_gettop(pL);			//å¾—åˆ°å‚æ•°çš„é•¿åº¦
 	const char *idx=lua_tostring(pL,1);
 	const char *grp=lua_tostring(pL,2);
 	int id=(int)lua_tonumber(pL,3); 
     
- //À¶ÑÌÇå£º´«Èë±ÈÀı
+ //è“çƒŸæ¸…ï¼šä¼ å…¥æ¯”ä¾‹
 	int percent = 100;
 	int bufferlen = 100;
 	if (n > 3)
@@ -674,7 +677,7 @@ int HAPI_CleanWarMap(lua_State *pL)
 
 int HAPI_DrawWarMap(lua_State *pL)
 {
-	int n = lua_gettop(pL);			//µÃµ½²ÎÊıµÄ³¤¶È
+	int n = lua_gettop(pL);			//å¾—åˆ°å‚æ•°çš„é•¿åº¦
 	int flag=(int)lua_tonumber(pL,1);
 	int x=(int)lua_tonumber(pL,2);
 	int y=(int)lua_tonumber(pL,3);
@@ -698,7 +701,7 @@ int HAPI_DrawWarMap(lua_State *pL)
 	return 0;
 }
 
-int HAPI_SaveSur(lua_State *pL){		//±£´æÆÁÄ»µ½ÁÙÊ±±íÃæ
+int HAPI_SaveSur(lua_State *pL){		//ä¿å­˜å±å¹•åˆ°ä¸´æ—¶è¡¨é¢
 	int x=(int)lua_tonumber(pL,1);
 	int y=(int)lua_tonumber(pL,2);
 	int w=(int)lua_tonumber(pL,3);
@@ -707,33 +710,33 @@ int HAPI_SaveSur(lua_State *pL){		//±£´æÆÁÄ»µ½ÁÙÊ±±íÃæ
 	lua_pushnumber(pL, id);
 	return 1;
 }
-int HAPI_LoadSur(lua_State *pL){			//¼ÓÔØÁÙÊ±±íÃæµ½ÆÁÄ»
+int HAPI_LoadSur(lua_State *pL){			//åŠ è½½ä¸´æ—¶è¡¨é¢åˆ°å±å¹•
 	int id=(int)lua_tonumber(pL,1);
 	int x=(int)lua_tonumber(pL,2);
 	int y=(int)lua_tonumber(pL,3);
 	JY_LoadSur(id, x, y);
 	return 0;
 }
-int HAPI_FreeSur(lua_State *pL){				//ÊÍ·Å
+int HAPI_FreeSur(lua_State *pL){				//é‡Šæ”¾
 	int id=(int)lua_tonumber(pL,1);
 	JY_FreeSur(id);
 	return 0;
 }
 
-int HAPI_ScreenWidth(lua_State *pL)				//ÆÁÄ»¿í¶È
+int HAPI_ScreenWidth(lua_State *pL)				//å±å¹•å®½åº¦
 {
 	lua_pushnumber(pL, device_w);
 	return 1;
 }
-int HAPI_ScreenHeight(lua_State *pL)			//ÆÁÄ»¸ß¶È
+int HAPI_ScreenHeight(lua_State *pL)			//å±å¹•é«˜åº¦
 {
 	lua_pushnumber(pL, device_h);
 	return 1;
 }
 
-int HAPI_LoadPNGPath(lua_State *pL)				//°´Í¼Æ¬¶ÁÈ¡PNG
+int HAPI_LoadPNGPath(lua_State *pL)				//æŒ‰å›¾ç‰‡è¯»å–PNG
 {
-	int n = lua_gettop(pL);			//µÃµ½²ÎÊıµÄ³¤¶È
+	int n = lua_gettop(pL);			//å¾—åˆ°å‚æ•°çš„é•¿åº¦
 	const char *path=lua_tostring(pL,1);
     int fileid=(int)lua_tonumber(pL,2);
 	int num=(int)lua_tonumber(pL,3);
@@ -750,9 +753,9 @@ int HAPI_LoadPNGPath(lua_State *pL)				//°´Í¼Æ¬¶ÁÈ¡PNG
 
 	return 0;
 }
-int HAPI_LoadPNG(lua_State *pL)				//°´Í¼Æ¬¶ÁÈ¡PNG
+int HAPI_LoadPNG(lua_State *pL)				//æŒ‰å›¾ç‰‡è¯»å–PNG
 {
-	int n = lua_gettop(pL);			//µÃµ½²ÎÊıµÄ³¤¶È
+	int n = lua_gettop(pL);			//å¾—åˆ°å‚æ•°çš„é•¿åº¦
     int fileid=(int)lua_tonumber(pL,1);
 	int picid=(int)lua_tonumber(pL,2);
 	int x=(int)lua_tonumber(pL,3);
@@ -802,17 +805,17 @@ int HAPI_GetPNGXY(lua_State *pL)
 int HAPI_3DBox(lua_State *pL)
 {
 	return 0;
-	//glLoadIdentity();							// ÖØÖÃµ±Ç°µÄÄ£ĞÍ¹Û²ì¾ØÕó
-	//glTranslatef(-1.5f,0.0f,-6.0f);						// ×óÒÆ 1.5 µ¥Î»£¬²¢ÒÆÈëÆÁÄ» 6.0
-	//glBegin(GL_TRIANGLES);							// »æÖÆÈı½ÇĞÎ
-	//	glVertex3f( 0.0f, 1.0f, 0.0f);					// ÉÏ¶¥µã
-	//	glVertex3f(-1.0f,-1.0f, 0.0f);					// ×óÏÂ
-	//	glVertex3f( 1.0f,-1.0f, 0.0f);					// ÓÒÏÂ
+	//glLoadIdentity();							// é‡ç½®å½“å‰çš„æ¨¡å‹è§‚å¯ŸçŸ©é˜µ
+	//glTranslatef(-1.5f,0.0f,-6.0f);						// å·¦ç§» 1.5 å•ä½ï¼Œå¹¶ç§»å…¥å±å¹• 6.0
+	//glBegin(GL_TRIANGLES);							// ç»˜åˆ¶ä¸‰è§’å½¢
+	//	glVertex3f( 0.0f, 1.0f, 0.0f);					// ä¸Šé¡¶ç‚¹
+	//	glVertex3f(-1.0f,-1.0f, 0.0f);					// å·¦ä¸‹
+	//	glVertex3f( 1.0f,-1.0f, 0.0f);					// å³ä¸‹
 	//glEnd();
 }
 
-// byteÊı×éluaº¯Êı
-/*  lua µ÷ÓÃĞÎÊ½£º(×¢Òâ£¬Î»ÖÃ¶¼ÊÇ´Ó0¿ªÊ¼
+// byteæ•°ç»„luaå‡½æ•°
+/*  lua è°ƒç”¨å½¢å¼ï¼š(æ³¨æ„ï¼Œä½ç½®éƒ½æ˜¯ä»0å¼€å§‹
      handle=Byte_create(size);
 	 Byte_release(h);
 	 handle=Byte_loadfile(h,filename,start,length);
@@ -830,7 +833,7 @@ int HAPI_3DBox(lua_State *pL)
 int Byte_create(lua_State *pL)
 {
 	int x=(int)lua_tonumber(pL,1);
-    char *p=(char *)lua_newuserdata(pL,x);                //´´½¨userdata£¬²»ĞèÒªÊÍ·ÅÁË¡£
+    char *p=(char *)lua_newuserdata(pL,x);                //åˆ›å»ºuserdataï¼Œä¸éœ€è¦é‡Šæ”¾äº†ã€‚
 	int i;
 
 	if(p==NULL){
