@@ -1,4 +1,4 @@
-// Í·ÎÄ¼ş 
+// å¤´æ–‡ä»¶ 
 #ifndef _JYMAIN_H_H
 #define _JYMAIN_H_H
 
@@ -32,7 +32,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-// ¹«¹²²¿·Ö
+// å…¬å…±éƒ¨åˆ†
 #ifndef BOOL
 #define BOOL unsigned char
 #endif
@@ -44,7 +44,7 @@ extern "C" {
 #endif
 
 
-//°²È«freeÖ¸ÕëµÄºê
+//å®‰å…¨freeæŒ‡é’ˆçš„å®
 //#define swap16( x )  ( ((x & 0x00ffU) << 8) |  ((x & 0xff00U) >> 8) )
 
 
@@ -67,16 +67,16 @@ int getfieldstr(lua_State *pL,const char *key,char *str);
 int System_Paused();
 int System_Resume();
 
-// Êä³öĞÅÏ¢µ½ÎÄ¼şdebug.txtÖĞ
+// è¾“å‡ºä¿¡æ¯åˆ°æ–‡ä»¶debug.txtä¸­
 int JY_Debug(const char * fmt,...);
 
-// Êä³öĞÅÏ¢µ½ÎÄ¼şerror.txtÖĞ
+// è¾“å‡ºä¿¡æ¯åˆ°æ–‡ä»¶error.txtä¸­
 int JY_Error(const char * fmt,...);
 
-//ÏŞÖÆ xÔÚ xmin-xmaxÖ®¼ä
+//é™åˆ¶ xåœ¨ xmin-xmaxä¹‹é—´
 int limitX(int x, int xmin, int xmax);
 
-//È¡ÎÄ¼ş³¤¶È
+//å–æ–‡ä»¶é•¿åº¦
 int FileLength(const char *filename);
 
 char *va(
@@ -86,80 +86,80 @@ char *va(
 
 //CharSet.c
 
-typedef struct UseFont_Type{      // ¶¨Òåµ±Ç°Ê¹ÓÃµÄ×ÖÌå½á¹¹
-	int size;         //×ÖºÅ£¬µ¥Î»ÏñËØ
-	char *name;       //×ÖÌåÎÄ¼şÃû
-    TTF_Font *font;   //´ò¿ªµÄ×ÖÌå
+typedef struct UseFont_Type{      // å®šä¹‰å½“å‰ä½¿ç”¨çš„å­—ä½“ç»“æ„
+	int size;         //å­—å·ï¼Œå•ä½åƒç´ 
+	char *name;       //å­—ä½“æ–‡ä»¶å
+    TTF_Font *font;   //æ‰“å¼€çš„å­—ä½“
 }UseFont;
 
-#define FONTNUM 10      //¶¨ÒåÍ¬Ê±´ò¿ªµÄ×ÖÌå¸öÊı
+#define FONTNUM 10      //å®šä¹‰åŒæ—¶æ‰“å¼€çš„å­—ä½“ä¸ªæ•°
 
-//³õÊ¼»¯×ÖÌå
+//åˆå§‹åŒ–å­—ä½“
 int InitFont();
 
-//ÊÍ·Å×ÖÌå½á¹¹
+//é‡Šæ”¾å­—ä½“ç»“æ„
 int ExitFont();
 
-// ¸ù¾İ×ÖÌåÎÄ¼şÃûºÍ×ÖºÅ´ò¿ª×ÖÌå
-// size Îª°´ÏñËØ´óĞ¡µÄ×ÖºÅ
+// æ ¹æ®å­—ä½“æ–‡ä»¶åå’Œå­—å·æ‰“å¼€å­—ä½“
+// size ä¸ºæŒ‰åƒç´ å¤§å°çš„å­—å·
 static TTF_Font *GetFont(const char *filename,int size);
 
-// Ğ´×Ö·û´®
-// x,y ×ø±ê
-// str ×Ö·û´®
-// color ÑÕÉ«
-// size ×ÖÌå´óĞ¡£¬×ÖĞÎÎªËÎÌå¡£ 
-// fontname ×ÖÌåÃû
-// charset ×Ö·û¼¯ 0 GBK 1 big5
-// OScharset ÎŞÓÃ
+// å†™å­—ç¬¦ä¸²
+// x,y åæ ‡
+// str å­—ç¬¦ä¸²
+// color é¢œè‰²
+// size å­—ä½“å¤§å°ï¼Œå­—å½¢ä¸ºå®‹ä½“ã€‚ 
+// fontname å­—ä½“å
+// charset å­—ç¬¦é›† 0 GBK 1 big5
+// OScharset æ— ç”¨
 int JY_DrawStr(int x, int y, const char *str,int color,int size,const char *fontname, 
 	int charset, int OScharset);
 int JY_DrawStr2(int x, int y, const char *str, int color, int size, const char *fontname,
 	int charset, int OScharset);
 
-//¼ÓÔØÂë±í×ª»»ÎÄ¼ş
+//åŠ è½½ç è¡¨è½¬æ¢æ–‡ä»¶
 int LoadMB(const char* mbfile);
 
 
-// ºº×Ö×Ö·û¼¯×ª»»
+// æ±‰å­—å­—ç¬¦é›†è½¬æ¢
 // flag = 0   Big5 --> GBK     
 //      = 1   GBK  --> Big5    
 //      = 2   Big5 --> Unicode
 //      = 3   GBK  --> Unicode
-// ×¢ÒâÒª±£Ö¤destÓĞ×ã¹»µÄ¿Õ¼ä£¬Ò»°ã½¨ÒéÈ¡src³¤¶ÈµÄÁ½±¶+1£¬±£Ö¤È«Ó¢ÎÄ×Ö·ûÒ²ÄÜ×ª»¯Îªunicode
+// æ³¨æ„è¦ä¿è¯destæœ‰è¶³å¤Ÿçš„ç©ºé—´ï¼Œä¸€èˆ¬å»ºè®®å–srcé•¿åº¦çš„ä¸¤å€+1ï¼Œä¿è¯å…¨è‹±æ–‡å­—ç¬¦ä¹Ÿèƒ½è½¬åŒ–ä¸ºunicode
 int  JY_CharSet(const char *src, char *dest, int flag);
 
 
 
 //PicCache.c
 
-// ¶¨ÒåÊ¹ÓÃµÄÁ´±í 
-struct CacheNode{    //ÌùÍ¼cacheÁ´±í½Úµã
-	SDL_Texture *s;               // ´ËÌùÍ¼¶ÔÓ¦µÄ±íÃæ
-	int w;			//ÌùÍ¼¿í¶È
-	int h;			//ÌùÍ¼¸ß¶È
-	int xoff;                     // ÌùÍ¼Æ«ÒÆ
+// å®šä¹‰ä½¿ç”¨çš„é“¾è¡¨ 
+struct CacheNode{    //è´´å›¾cacheé“¾è¡¨èŠ‚ç‚¹
+	SDL_Texture *s;               // æ­¤è´´å›¾å¯¹åº”çš„è¡¨é¢
+	int w;			//è´´å›¾å®½åº¦
+	int h;			//è´´å›¾é«˜åº¦
+	int xoff;                     // è´´å›¾åç§»
 	int yoff;
-	int id;                  //ÌùÍ¼±àºÅ
-    int fileid;              //ÌùÍ¼ÎÄ¼ş±àºÅ
-    struct list_head list;        // Á´±í½á¹¹£¬linux.hÖĞµÄlist.hÖĞ¶¨Òå
+	int id;                  //è´´å›¾ç¼–å·
+    int fileid;              //è´´å›¾æ–‡ä»¶ç¼–å·
+    struct list_head list;        // é“¾è¡¨ç»“æ„ï¼Œlinux.hä¸­çš„list.hä¸­å®šä¹‰
 } ;
 
 
-struct PicFileCache{   //ÌùÍ¼ÎÄ¼şÁ´±í½Úµã
-	int num;                    // ÎÄ¼şÌùÍ¼¸öÊı
-	int *idx;                  // idxµÄÄÚÈİ
-	int filelength;            //grpÎÄ¼ş³¤¶È
-	FILE *fp;                  //grpÎÄ¼ş¾ä±ú
-	unsigned char *grp;                  // grpµÄÄÚÈİ
-	int percent;			//Ö¸¶¨±ÈÀı
-	struct CacheNode **pcache;  // ÎÄ¼şÖĞËùÓĞµÄÌùÍ¼¶ÔÓ¦µÄcache½ÚµãÖ¸Õë£¬Îª¿ÕÔò±íÊ¾Ã»ÓĞ¡£
+struct PicFileCache{   //è´´å›¾æ–‡ä»¶é“¾è¡¨èŠ‚ç‚¹
+	int num;                    // æ–‡ä»¶è´´å›¾ä¸ªæ•°
+	int *idx;                  // idxçš„å†…å®¹
+	int filelength;            //grpæ–‡ä»¶é•¿åº¦
+	FILE *fp;                  //grpæ–‡ä»¶å¥æŸ„
+	unsigned char *grp;                  // grpçš„å†…å®¹
+	int percent;			//æŒ‡å®šæ¯”ä¾‹
+	struct CacheNode **pcache;  // æ–‡ä»¶ä¸­æ‰€æœ‰çš„è´´å›¾å¯¹åº”çš„cacheèŠ‚ç‚¹æŒ‡é’ˆï¼Œä¸ºç©ºåˆ™è¡¨ç¤ºæ²¡æœ‰ã€‚
 	char path[512];
-	char suffix[12];	//ºó×ºÃû
+	char suffix[12];	//åç¼€å
 	int bufflen;
 };
 
-#define PIC_FILE_NUM 100   //»º´æµÄÌùÍ¼ÎÄ¼ş(idx/grp)¸öÊı
+#define PIC_FILE_NUM 100   //ç¼“å­˜çš„è´´å›¾æ–‡ä»¶(idx/grp)ä¸ªæ•°
 
 
 
@@ -214,7 +214,7 @@ int JY_SetMMap(short x, short y , int flag, short v);
 
 int BuildingSort(short x, short y, short Mypic);
 
-// »æÖÆÖ÷µØÍ¼
+// ç»˜åˆ¶ä¸»åœ°å›¾
 int JY_DrawMMap(int x, int y, int Mypic);
 
 int JY_LoadSMap(const char *Sfilename,const char*tmpfilename, int num,int x_max,int y_max,
@@ -283,7 +283,7 @@ int StopMIDI();
 
 int JY_PlayWAV(const char *filename);
 
-int JY_GetKey();
+int JY_GetKey(int *type, int *key, int *x, int *y);
 
 int JY_GetMouse(int *x, int *y);
 int JY_SetClip(int x1,int y1,int x2,int y2);
@@ -306,9 +306,9 @@ int JY_PlayMPEG(const char* filename,int esckey);
 int JY_FullScreen();
 
 
-int JY_SaveSur(int x, int y, int w, int h);		//±£´æÆÁÄ»µ½ÁÙÊ±±íÃæ
-int JY_LoadSur(int id, int x, int y);			//¼ÓÔØÁÙÊ±±íÃæµ½ÆÁÄ»
-int JY_FreeSur(int id);				//ÊÍ·Å
+int JY_SaveSur(int x, int y, int w, int h);		//ä¿å­˜å±å¹•åˆ°ä¸´æ—¶è¡¨é¢
+int JY_LoadSur(int id, int x, int y);			//åŠ è½½ä¸´æ—¶è¡¨é¢åˆ°å±å¹•
+int JY_FreeSur(int id);				//é‡Šæ”¾
 
 int PausedMIDI();
 SDL_Texture* createPolygonTexture(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
