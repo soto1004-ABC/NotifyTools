@@ -15,21 +15,21 @@ SDL_Window* g_window;
 SDL_Renderer* g_renderer;
 SDL_Texture* g_screenTex;
 
-int g_ScreenW=1280 ;         // 屏幕宽高
-int g_ScreenH=720 ;
-int device_w=1280 ;
-int device_h=720 ;
-int g_ScreenBpp=16 ;         // 屏幕色深
-int g_FullScreen=0;
-int g_EnableSound=1;         // 声音开关 0 关闭 1 打开
-int g_MusicVolume=32;           // 音乐声音大小
-int g_SoundVolume=32;           // 音效声音大小
+int g_ScreenW = 1280;          // 屏幕宽高
+int g_ScreenH = 720;
+int device_w = 1280;
+int device_h = 720;
+int g_ScreenBpp = 16;          // 屏幕色深
+int g_FullScreen = 1;
+int g_EnableSound = 1;         // 声音开关 0 关闭 1 打开
+int g_MusicVolume = 32;            // 音乐声音大小
+int g_SoundVolume = 32;            // 音效声音大小
 
-int g_XScale=18;             //贴图x,y方向一半大小
-int g_YScale=9;
+int g_XScale = 18;             //贴图x,y方向一半大小
+int g_YScale = 9;
 
 //各个地图绘制时xy方向需要多绘制的余量。保证可以全部显示
-int g_MMapAddX;             
+int g_MMapAddX;              
 int g_MMapAddY;
 int g_SMapAddX;
 int g_SMapAddY;
@@ -39,13 +39,13 @@ int g_WMapAddY;
 int g_KeyRepeatDelay = 150;		//第一次键盘重复等待ms数
 int g_KeyRePeatInterval = 30;	//一秒钟重复次数
 
-int g_MAXCacheNum=1000;     //最大缓存数量
+int g_MAXCacheNum = 1000;     //最大缓存数量
 
-static int IsDebug=0;         //是否打开跟踪文件
-int g_LoadFullS=1;          //是否全部加载S文件
-int g_LoadMMapType=0;         //是否全部加载M文件
-int g_LoadMMapScope=0;       
-int g_PreLoadPicGrp=0;      //是否预先加载贴图文件的grp
+static int IsDebug = 0;         //是否打开跟踪文件
+int g_LoadFullS = 1;          //是否全部加载S文件
+int g_LoadMMapType = 0;         //是否全部加载M文件
+int g_LoadMMapScope = 0;       
+int g_PreLoadPicGrp = 0;      //是否预先加载贴图文件的grp
 
 int g_D1X = -1;
 int g_D1Y = -1;
@@ -87,50 +87,37 @@ SDL_Texture* g_WarMoveTex[4];
 //定义的lua接口函数名
 static const struct luaL_Reg jylib [] = {
       {"Debug", HAPI_Debug},
-
-      //{"GetKey", HAPI_GetKey},
 	  { "GetKey", HAPI_GetKey},
       {"GetMouse", HAPI_GetMouse},
       {"EnableKeyRepeat", HAPI_EnableKeyRepeat},
-
       {"Delay", HAPI_Delay},
       {"GetTime", HAPI_GetTime},
-  
       {"CharSet", HAPI_CharSet},
       {"DrawStr", HAPI_DrawStr},
-
-     
-      {"SetClip",HAPI_SetClip},
+      {"SetClip", HAPI_SetClip},
       {"FillColor", HAPI_FillColor},
 	  { "Background", HAPI_Background },
 	  { "Gauss", HAPI_Gauss },
 	  { "DrawRect", HAPI_DrawRect },
 	  { "DrawLine", HAPI_DrawLine },
-
       {"ShowSurface", HAPI_ShowSurface},
       {"ShowSlow", HAPI_ShowSlow},
-
       {"PicInit", HAPI_PicInit},
       {"PicGetXY", HAPI_GetPicXY},
       {"PicLoadCache", HAPI_LoadPic},
       {"PicLoadCache2", HAPI_LoadPic2},
       {"PicLoadFile", HAPI_PicLoadFile},
-
       {"FullScreen", HAPI_FullScreen},
-
       {"LoadPicture", HAPI_LoadPicture},
       {"LoadConfig", HAPI_LoadConfig},
       {"LoadSoundConfig", HAPI_LoadSoundConfig},
-
       {"PlayMIDI", HAPI_PlayMIDI},
       {"PlayWAV", HAPI_PlayWAV},
       {"PlayMPEG", HAPI_PlayMPEG},
-     
 	  {"LoadMMap", HAPI_LoadMMap},
       {"DrawMMap", HAPI_DrawMMap},
       {"GetMMap", HAPI_GetMMap},
 	  {"UnloadMMap", HAPI_UnloadMMap},
- 
       {"LoadSMap", HAPI_LoadSMap},
       {"SaveSMap", HAPI_SaveSMap},
       {"GetS", HAPI_GetS},
@@ -138,25 +125,21 @@ static const struct luaL_Reg jylib [] = {
       {"GetD", HAPI_GetD},
       {"SetD", HAPI_SetD},
       {"DrawSMap", HAPI_DrawSMap},
-
       {"LoadWarMap", HAPI_LoadWarMap},
       {"GetWarMap", HAPI_GetWarMap},
       {"SetWarMap", HAPI_SetWarMap},
       {"CleanWarMap", HAPI_CleanWarMap},
-
       {"DrawWarMap", HAPI_DrawWarMap},
       {"SaveSur", HAPI_SaveSur},
-		  {"LoadSur", HAPI_LoadSur},
-		  {"FreeSur", HAPI_FreeSur},
-		  {"GetScreenW", HAPI_ScreenWidth},
-		  {"GetScreenH", HAPI_ScreenHeight},
-      {"LoadPNGPath",HAPI_LoadPNGPath},
-		{"LoadPNG",HAPI_LoadPNG},
-		{ "GetPNGXY", HAPI_GetPNGXY },
-
-	  
+	  {"LoadSur", HAPI_LoadSur},
+	  {"FreeSur", HAPI_FreeSur},
+	  {"GetScreenW", HAPI_ScreenWidth},
+	  {"GetScreenH", HAPI_ScreenHeight},
+      {"LoadPNGPath", HAPI_LoadPNGPath},
+	  {"LoadPNG", HAPI_LoadPNG},
+	  { "GetPNGXY", HAPI_GetPNGXY },
       {NULL, NULL}
-    };
+};
  
 static const struct luaL_Reg bytelib[] = {
 	{ "create", Byte_create },
@@ -174,14 +157,14 @@ static const struct luaL_Reg bytelib[] = {
 	{ "set64", Byte_set64 },
 	{ "getstr", Byte_getstr },
 	{ "setstr", Byte_setstr },
-	{ "hash", Byte_RSHash }, //Byte_RSHash Byte_BKDHash
-	{"getfiletime",Byte_getfiletime},
+	{ "hash", Byte_RSHash },
+	{"getfiletime", Byte_getfiletime},
 	{ NULL, NULL }
 };
-static const struct luaL_Reg configLib [] = {
 
+static const struct luaL_Reg configLib [] = {
 		{"GetPath", Config_GetPath},
-		 {NULL, NULL}
+		{NULL, NULL}
 };
 
 static void GetModes (int *width, int *height)
@@ -194,12 +177,10 @@ static void GetModes (int *width, int *height)
      return ;
   }
   
-  //宽
   memset(buf, 0, 10);
 	fgets(buf, 10, fp);
 	*width = atoi(buf);
 
-	//高
 	memset(buf, 0, 10);
   fgets(buf, 10, fp);
 	*height = atoi(buf);
@@ -209,9 +190,6 @@ static void GetModes (int *width, int *height)
   fclose(fp);
 }
 
-
-
-
 typedef struct Sprite
 {
 	SDL_Texture* texture;
@@ -219,8 +197,6 @@ typedef struct Sprite
 	Uint16 h;
 } Sprite;
 
-
-/* Adapted from SDL's testspriteminimal.c */
 Sprite LoadSprite(const char* file, SDL_Renderer* renderer)
 {
 	Sprite result;
@@ -229,9 +205,6 @@ Sprite LoadSprite(const char* file, SDL_Renderer* renderer)
 	result.h = 0;
 
 	SDL_Surface* temp;
-
-	/* Load the sprite image */
-	//LOGI("SDL SDL_LoadBMP 1");
 	temp = SDL_LoadBMP(file);
 
 	if (temp == NULL)
@@ -243,7 +216,6 @@ Sprite LoadSprite(const char* file, SDL_Renderer* renderer)
 	result.w = temp->w;
 	result.h = temp->h;
 
-	/* Create texture from the image */
 	result.texture = SDL_CreateTextureFromSurface(renderer, temp);
 	if (!result.texture) {
 		fprintf(stderr, "Couldn't create texture: %s\n", SDL_GetError());
@@ -259,56 +231,41 @@ void draw(SDL_Window* window, SDL_Renderer* renderer, const Sprite sprite)
 {
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
-	SDL_Rect destRect = { 312,148,142,110 };// {w/2 - sprite.w/2, h/2 - sprite.h/2, sprite.w, sprite.h};
+	SDL_Rect destRect = { 312, 148, 142, 110 };
 	JY_SetClip(312, 148, 312 + 142, 148 + 7 + 24 * 7);
-	//{0,0,1920,1024}; //
-	/* Blit the sprite onto the screen */
 	SDL_SetTextureBlendMode(sprite.texture, SDL_BLENDMODE_BLEND);
 	SDL_RenderCopy(renderer, sprite.texture, NULL, &destRect);
-	JY_SetClip( 0, 0, 0, 0);
-	JY_SetClip( 312, 148 + 8 + 24 * 4, 312 + 144, 148 + 8 + 24 * 7 + 8);
+	JY_SetClip(0, 0, 0, 0);
+	JY_SetClip(312, 148 + 8 + 24 * 4, 312 + 144, 148 + 8 + 24 * 7 + 8);
 
 	JY_SetClip(312, 252, 456, 332);
 	SDL_SetTextureBlendMode(sprite.texture, SDL_BLENDMODE_BLEND);
-	SDL_Rect destRect2 = { 312,220,142,110 };
+	SDL_Rect destRect2 = { 312, 220, 142, 110 };
 	SDL_RenderCopy(renderer, sprite.texture, NULL, &destRect2);
-	JY_SetClip( 0, 0, 0, 0);
+	JY_SetClip(0, 0, 0, 0);
 }
-
 
 void draw2(SDL_Window* window, SDL_Renderer* renderer, const Sprite sprite)
 {
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
-	SDL_Rect destRect = { 312,148,142,110 };// {w/2 - sprite.w/2, h/2 - sprite.h/2, sprite.w, sprite.h};
-	JY_SetClip( 312, 148, 312 + 142, 148 + 7 + 24 * 7);
+	SDL_Rect destRect = { 312, 148, 142, 110 };
+	JY_SetClip(312, 148, 312 + 142, 148 + 7 + 24 * 7);
 	JY_LoadPicColor(4, 120, 312, 148, 1, 0, -1, 0, 0);
-	//{0,0,1920,1024}; //
-	/* Blit the sprite onto the screen */
 	JY_SetClip(0, 0, 0, 0);
 	JY_SetClip(312, 252, 456, 332);
 	JY_LoadPicColor(4, 120, 312, 220, 1, 0, -1, 0, 0);
-	JY_SetClip( 0, 0, 0, 0);
+	JY_SetClip(0, 0, 0, 0);
 }
-
 
 void draw3()
 {
 	int w, h;
-	  
-	SDL_Rect destRect = { 312,148,142,110 };// {w/2 - sprite.w/2, h/2 - sprite.h/2, sprite.w, sprite.h};
+	SDL_Rect destRect = { 312, 148, 142, 110 };
 	JY_SetClip(312, 148, 312 + 142, 148 + 7 + 24 * 7);
 	JY_LoadPicColor(4, 120, 312, 148, 1, 0, -1, 0, 0);
-	//{0,0,1920,1024}; //
-	/* Blit the sprite onto the screen */
-	/*JY_SetClip(0, 0, 0, 0);
-	JY_SetClip(312, 252, 456, 332);
-	JY_LoadPicColor(4, 120, 312, 220, 1, 0, -1, 0, 0);
-	JY_SetClip(0, 0, 0, 0);*/
-
 	JY_ShowSurface(0);
 }
-
 
 int main_android()
 {
@@ -316,13 +273,17 @@ int main_android()
 	device_h = g_ScreenH = 720;
 	
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
+	
+	// 스위치 화면 크기에 맞춰 풀스크린 창 생성
 	g_window = SDL_CreateWindow("JY_LLK",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		1280, 720,
-		0);
-	g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_PRESENTVSYNC);
+		SDL_WINDOW_FULLSCREEN_DESKTOP);
+		
+	g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	
-	// 논리적 해상도 고정
+	// 논리적 해상도를 1280x720으로 확실히 고정하여 화면 왜곡 및 작게 나오는 현상 방지
 	SDL_RenderSetLogicalSize(g_renderer, 1280, 720);
 
 	Uint8 done = 0;
@@ -337,9 +298,9 @@ int main_android()
 			}
 		}
 
-		// 화면을 회색으로 채우기만 하고 튕기는지 확인
-		SDL_SetRenderDrawColor(g_renderer, 100, 100, 100, 255);
+		SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
 		SDL_RenderClear(g_renderer);
+		draw3();
 		SDL_RenderPresent(g_renderer);
 
 		SDL_Delay(10);
@@ -359,7 +320,7 @@ int main(int argc, char *argv [])
 	lua_State *pL_main;
 
 	remove(_(DEBUG_FILE));
-	remove(_(ERROR_FILE));    //设置stderr输出到文件
+	remove(_(ERROR_FILE));
 
 	pL_main = luaL_newstate();
 	luaL_openlibs(pL_main);
@@ -380,13 +341,13 @@ int main(int argc, char *argv [])
 	lua_setglobal(pL_main, "config");
 
 	JY_Debug("Lua_Config();");
-	Lua_Config(pL_main, _(CONFIG_FILE));        //读取lua配置文件，设置参数
+	Lua_Config(pL_main, _(CONFIG_FILE));
 
 	JY_Debug("InitSDL();");
-	InitSDL();           //初始化SDL
+	InitSDL();
 
 	JY_Debug("InitGame();");
-	InitGame();          //初始化游戏数据
+	InitGame();
 
 	g_WarMoveTex[0] = createPolygonTexture(255, 255, 255, 128);
 	g_WarMoveTex[1] = createPolygonTexture(255, 255, 255, 64);
@@ -394,60 +355,54 @@ int main(int argc, char *argv [])
 	g_WarMoveTex[3] = createPolygonTexture(0, 0, 0, 64);
 
 	JY_Debug("LoadMB();");
-	LoadMB(_(HZMB_FILE));  //加载汉字字符集转换码表
+	LoadMB(_(HZMB_FILE));
 
 	JY_Debug("Lua_Main();");
-	Lua_Main(pL_main);          //调用Lua主函数，开始游戏
+	Lua_Main(pL_main);
 
 	JY_Debug("ExitGame();");
-	ExitGame();       //释放游戏数据
+	ExitGame();
 
 	JY_Debug("ExitSDL();");
-	ExitSDL();        //退出SDL
+	ExitSDL();
 
 	JY_Debug("main() end;");
 
-	//关闭lua
 	lua_close(pL_main);
 	exit(0);
 }
 
-
 //Lua主函数
 int Lua_Main(lua_State *pL_main)
 {
-	int result=0; 
+	int result = 0;
 
-	//加载lua文件
-    result=luaL_loadfile(pL_main, JYMain_Lua);
-    switch(result){
-    case LUA_ERRSYNTAX:
-    	JY_Error("load lua file %s error: syntax error!\n",JYMain_Lua);
-        break;
-    case LUA_ERRMEM:
-    	JY_Error("load lua file %s error: memory allocation error!\n",JYMain_Lua);
-        break;
-    case LUA_ERRFILE:
-    	JY_Error("load lua file %s error: can not open file!\n",JYMain_Lua);
-        break;    
-    }
+	result = luaL_loadfile(pL_main, JYMain_Lua);
+	switch(result){
+	case LUA_ERRSYNTAX:
+		JY_Error("load lua file %s error: syntax error!\n", JYMain_Lua);
+		break;
+	case LUA_ERRMEM:
+		JY_Error("load lua file %s error: memory allocation error!\n", JYMain_Lua);
+		break;
+	case LUA_ERRFILE:
+		JY_Error("load lua file %s error: can not open file!\n", JYMain_Lua);
+		break;    
+	}
     
-	result=lua_pcall(pL_main, 0, LUA_MULTRET, 0);
+	result = lua_pcall(pL_main, 0, LUA_MULTRET, 0);
     
-    //调用lua的主函数JY_Main    
-   	lua_getglobal(pL_main,"JY_Main");
-	result=lua_pcall(pL_main,0,0,0);
+   	lua_getglobal(pL_main, "JY_Main");
+	result = lua_pcall(pL_main, 0, 0, 0);
 
 	return 0;
 }
-
 
 //Lua读取配置信息
 int Lua_Config(lua_State *pL, const char *filename)
 {
 	int result = 0;
 
-	//加载lua配置文件
 	result = luaL_loadfile(pL, filename);
 	switch (result){
 	case LUA_ERRSYNTAX:
@@ -463,7 +418,7 @@ int Lua_Config(lua_State *pL, const char *filename)
 
 	result = lua_pcall(pL, 0, LUA_MULTRET, 0);
 
-	lua_getglobal(pL, "CONFIG");            //读取config定义的值
+	lua_getglobal(pL, "CONFIG");
 
 	if (getfield(pL, "Width") != 0){
 		g_ScreenW = getfield(pL, "Width");
@@ -530,27 +485,24 @@ int Lua_Config(lua_State *pL, const char *filename)
 	return 0;
 }
 
-
-//读取lua表中的整型
-int getfield(lua_State *pL,const char *key)
+int getfield(lua_State *pL, const char *key)
 {
 	int result;
-	lua_getfield(pL,-1,key);
-	result=(int)lua_tonumber(pL,-1);
-	lua_pop(pL,1);
+	lua_getfield(pL, -1, key);
+	result = (int)lua_tonumber(pL, -1);
+	lua_pop(pL, 1);
 	return result;
 }
 
-
-
-//读取lua表中的字符串
-int getfieldstr(lua_State *pL,const char *key,char *str)
+int getfieldstr(lua_State *pL, const char *key, char *str)
 {
 	const char *tmp;
-	lua_getfield(pL,-1,key);
-	tmp=(const char *)lua_tostring(pL,-1);
-	strcpy(str,tmp); 
-	lua_pop(pL,1);
+	lua_getfield(pL, -1, key);
+	tmp = (const char *)lua_tostring(pL, -1);
+	if (tmp) {
+		strcpy(str, tmp);
+	}
+	lua_pop(pL, 1);
 	return 0;
 }
 
@@ -566,10 +518,7 @@ int System_Resume()
 	return 0;
 }
 
-
-// 调试函数
-// 输出到debug.txt中
-int JY_Debug(const char * fmt,...)
+int JY_Debug(const char * fmt, ...)
 {
     time_t t;
 	FILE *fp;
@@ -579,10 +528,10 @@ int JY_Debug(const char * fmt,...)
 	va_start(argptr, fmt);
 	vsnprintf(string, sizeof(string), fmt, argptr);
 	va_end(argptr);
-    if(IsDebug==0)
+    if(IsDebug == 0)
         return 0;
 
-	fp=fopen(_("debug.txt"),"a+t");
+	fp = fopen(_("debug.txt"), "a+t");
 	if (fp){
 		time(&t);
 		newtime = localtime(&t);
@@ -593,21 +542,18 @@ int JY_Debug(const char * fmt,...)
 	return 0;
 }
 
-// 调试函数
-// 输出到error.txt中
-int JY_Error(const char * fmt,...)
+int JY_Error(const char * fmt, ...)
 {
     time_t t;
 	FILE *fp;
     struct tm *newtime;
- 
     va_list argptr;
     char string[1024];
        
 	va_start(argptr, fmt);
 	vsnprintf(string, sizeof(string), fmt, argptr);
 	va_end(argptr);
-	fp=fopen(_("error.txt"),"a+t");
+	fp = fopen(_("error.txt"), "a+t");
 	if (fp){
 		time(&t);
 		newtime = localtime(&t);
@@ -617,26 +563,24 @@ int JY_Error(const char * fmt,...)
 	return 0;
 } 
 
-// 限制x大小
 int limitX(int x, int xmin, int xmax)
 {
-    if(x>xmax)
-		x=xmax;
-	if(x<xmin)
-		x=xmin;
+    if(x > xmax)
+		x = xmax;
+	if(x < xmin)
+		x = xmin;
 	return x;
 }
 
-// 返回文件长度，若为0，则文件可能不存在
 int FileLength(const char *filename)
 {
-    FILE   *f;  
+    FILE *f;  
     int ll;
-    if((f=fopen(filename,"rb"))==NULL){
-        return 0;            // 文件不存在，返回
+    if((f = fopen(filename, "rb")) == NULL){
+        return 0;
 	}
-    fseek(f,0,SEEK_END);  
-    ll=ftell(f);    //这里得到的len就是文件的长度了
+    fseek(f, 0, SEEK_END);  
+    ll = ftell(f);
     fclose(f);   
 	return ll;
 }
@@ -644,7 +588,7 @@ int FileLength(const char *filename)
 char * va(const char *format, ...)
 {
    static char string[256];
-   va_list     argptr;
+   va_list argptr;
 
    va_start(argptr, format);
    vsnprintf(string, 256, format, argptr);
