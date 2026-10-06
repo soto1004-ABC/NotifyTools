@@ -1,32 +1,51 @@
-// SDL Ïà¹Øº¯Êı
+// SDL ç›¸å…³å‡½æ•°
 #include "jymain.h"
 #include <math.h>
 
+#ifndef max
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifdef __SWITCH__
+#include <switch.h>
+#endif
+
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifdef __SWITCH__
+#include <switch.h>
+#endif
+
 #include <time.h>
-//static Mix_Music *currentMusic=NULL;         //²¥·ÅÒôÀÖÊı¾İ£¬ÓÉÓÚÍ¬Ê±Ö»²¥·ÅÒ»¸ö£¬ÓÃÒ»¸ö±äÁ¿
+//static Mix_Music *currentMusic=NULL;         //æ’­æ”¾éŸ³ä¹æ•°æ®ï¼Œç”±äºåŒæ—¶åªæ’­æ”¾ä¸€ä¸ªï¼Œç”¨ä¸€ä¸ªå˜é‡
 static HSTREAM currentMusic = 0;
 
 #define WAVNUM 50
 
-//static Mix_Chunk *WavChunk[WAVNUM];        //²¥·ÅÒôĞ§Êı¾İ£¬¿ÉÒÔÍ¬Ê±²¥·Å¼¸¸ö£¬Òò´ËÓÃÊı×é
-static HSAMPLE WavChunk[WAVNUM];        //²¥·ÅÒôĞ§Êı¾İ£¬¿ÉÒÔÍ¬Ê±²¥·Å¼¸¸ö£¬Òò´ËÓÃÊı×é
+//static Mix_Chunk *WavChunk[WAVNUM];        //æ’­æ”¾éŸ³æ•ˆæ•°æ®ï¼Œå¯ä»¥åŒæ—¶æ’­æ”¾å‡ ä¸ªï¼Œå› æ­¤ç”¨æ•°ç»„
+static HSAMPLE WavChunk[WAVNUM];        //æ’­æ”¾éŸ³æ•ˆæ•°æ®ï¼Œå¯ä»¥åŒæ—¶æ’­æ”¾å‡ ä¸ªï¼Œå› æ­¤ç”¨æ•°ç»„
 //static BASS_MIDI_FONT midfonts;
 
 
-static int currentWav=0;                  //µ±Ç°²¥·ÅµÄÒôĞ§
+static int currentWav=0;                  //å½“å‰æ’­æ”¾çš„éŸ³æ•ˆ
 
 extern SDL_Window* g_window;
 extern SDL_Renderer* g_renderer;
 extern SDL_Texture* g_screenTex;
 
 #define RECTNUM  20
-static SDL_Rect ClipRect[RECTNUM];        // µ±Ç°ÉèÖÃµÄ¼ô²Ã¾ØĞÎ
+static SDL_Rect ClipRect[RECTNUM];        // å½“å‰è®¾ç½®çš„å‰ªè£çŸ©å½¢
 static int currentRect=0;
 
-static SDL_Texture* op_Surface[12];		//°Ë¸ö²Ù×÷Í¼
-static SDL_Rect op_Rect[12];		//²Ù×÷Í¼ËùÔÚµÄÎ»ÖÃ
-static int op_alpha1 = 192;	//ÓĞ²Ù×÷Ê±µÄÍ¸Ã÷¶È
-static int op_alpha2 = 128;	//ÎŞ²Ù×÷Ê±µÄÍ¸Ã÷¶È
+static SDL_Texture* op_Surface[12];		//å…«ä¸ªæ“ä½œå›¾
+static SDL_Rect op_Rect[12];		//æ“ä½œå›¾æ‰€åœ¨çš„ä½ç½®
+static int op_alpha1 = 192;	//æœ‰æ“ä½œæ—¶çš„é€æ˜åº¦
+static int op_alpha2 = 128;	//æ— æ“ä½œæ—¶çš„é€æ˜åº¦
 
 extern int device_w;
 extern int device_h;
@@ -34,8 +53,8 @@ extern int g_ScreenW ;
 extern int g_ScreenH ;
 extern char JY_CurrentPath[512];
 extern int g_ScreenBpp ;
-extern int g_KeyRepeatDelay;		//µÚÒ»´Î¼üÅÌÖØ¸´µÈ´ımsÊı
-extern int g_KeyRePeatInterval;	//Ò»ÃëÖÓÖØ¸´´ÎÊı
+extern int g_KeyRepeatDelay;		//ç¬¬ä¸€æ¬¡é”®ç›˜é‡å¤ç­‰å¾…msæ•°
+extern int g_KeyRePeatInterval;	//ä¸€ç§’é’Ÿé‡å¤æ¬¡æ•°
 
 extern float g_Zoom;
 
@@ -73,13 +92,13 @@ extern int g_XScale;
 extern int g_YScale;
 
 
-extern int g_MP3;		//ÊÇ·ñ²¥·ÅMP3
+extern int g_MP3;		//æ˜¯å¦æ’­æ”¾MP3
 extern char g_MidSF2[255];
 
 extern int g_KeyScale;
 Uint64 *gettickcountKey = NULL;
 #define SURFACE_NUM  20
-static SDL_Texture* tmp_Surface[SURFACE_NUM];	//JY_SaveSurÊ¹ÓÃ
+static SDL_Texture* tmp_Surface[SURFACE_NUM];	//JY_SaveSurä½¿ç”¨
 
 #ifndef BOOL
 #define BOOL unsigned char
@@ -90,7 +109,7 @@ static SDL_Texture* tmp_Surface[SURFACE_NUM];	//JY_SaveSurÊ¹ÓÃ
 #ifndef FALSE
 #define FALSE (BOOL) 0
 #endif
-//Êó±êÖ¸Õë
+//é¼ æ ‡æŒ‡é’ˆ
 static SDL_Cursor* arrow;
 static const char *arrow_1 [] = {
 	/* width height num_colors chars_per_pixel */
@@ -123,7 +142,7 @@ static const char *arrow_1 [] = {
 	"1,1"
 };
 
-//×¥ÆÁ
+//æŠ“å±
 /*++
   Purpose:
 
@@ -359,7 +378,7 @@ static int KeyFilter(const SDL_Event *event)
 
 }
 
-// ³õÊ¼»¯SDL
+// åˆå§‹åŒ–SDL
 int InitSDL(void)
 {
 	int r;
@@ -374,10 +393,10 @@ int InitSDL(void)
 	        exit(1);
 	    }
 
-	    //atexit(SDL_Quit);    ¿ÉÄÜÓĞÎÊÌâ£¬ÆÁ±Îµô
+	    //atexit(SDL_Quit);    å¯èƒ½æœ‰é—®é¢˜ï¼Œå±è”½æ‰
 
 
-	    InitFont();  //³õÊ¼»¯
+	    InitFont();  //åˆå§‹åŒ–
 
 		r=SDL_InitSubSystem(SDL_INIT_AUDIO);
 	    if(r<0)
@@ -421,7 +440,7 @@ int InitSDL(void)
 	    return 0;
 }
 
-// ÍË³öSDL
+// é€€å‡ºSDL
 int ExitSDL(void)
 {
 	int i;
@@ -451,7 +470,7 @@ int ExitSDL(void)
 
 		Mix_CloseAudio();
 		*/
-	JY_LoadPicture("",0,0,0);    // ÊÍ·Å¿ÉÄÜ¼ÓÔØµÄÍ¼Æ¬±íÃæ
+	JY_LoadPicture("",0,0,0);    // é‡Šæ”¾å¯èƒ½åŠ è½½çš„å›¾ç‰‡è¡¨é¢
 
 	SDL_DestroyTexture(g_screenTex);
 	SDL_DestroyRenderer(g_renderer);
@@ -474,7 +493,7 @@ void SetRendererColor(int color)
 }
 
 
-// ³õÊ¼»¯ÓÎÏ·Êı¾İ
+// åˆå§‹åŒ–æ¸¸æˆæ•°æ®
 int InitGame(void)
 {
 	SDL_Rect rect = {0};
@@ -484,7 +503,7 @@ int InitGame(void)
 	if (g_KeyScale)
 		zoom = (float) g_ScreenW / (float) g_KeyScale;
 
-	//ĞéÄâ°´¼üÍ¼
+	//è™šæ‹ŸæŒ‰é”®å›¾
 	char buttons[][5] = { "D1","D2","D3","D4","C1","C2","A","B","F1","F2","F3","F4" };
 	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {
 		printf("Couldn't initialize SDL video subsystem: %s\n", SDL_GetError());
@@ -494,10 +513,10 @@ int InitGame(void)
 	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 	//
 	/*
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3); //ÉèÖÃGL°æ±¾µÄ
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3); //è®¾ç½®GLç‰ˆæœ¬çš„
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);//ÉèÖÃ¶à»º´æµÄ¸öÊı
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);//ÉèÖÃÉî¶È»º´æ´óĞ¡µÄ£¬ÁíÍâÈç¹û½²24¸Ä³É32Äã»á·¢ÏÖĞÔÄÜ»áÏÂ½µºÜ¶àºÜ¶àºÜ¶àºÜ¶àµÄ¡£
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);//è®¾ç½®å¤šç¼“å­˜çš„ä¸ªæ•°
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);//è®¾ç½®æ·±åº¦ç¼“å­˜å¤§å°çš„ï¼Œå¦å¤–å¦‚æœè®²24æ”¹æˆ32ä½ ä¼šå‘ç°æ€§èƒ½ä¼šä¸‹é™å¾ˆå¤šå¾ˆå¤šå¾ˆå¤šå¾ˆå¤šçš„ã€‚
     */
     //
 	device_w = 1280; device_h = 800;
@@ -535,13 +554,13 @@ int InitGame(void)
 
 	Init_Cache();
 
-	JY_PicInit("");        // ³õÊ¼»¯ÌùÍ¼cache
+	JY_PicInit("");        // åˆå§‹åŒ–è´´å›¾cache
 
 	return 0;
 }
 
 
-// ÊÍ·ÅÓÎÏ·×ÊÔ´
+// é‡Šæ”¾æ¸¸æˆèµ„æº
 int ExitGame(void)
 {
 
@@ -549,20 +568,20 @@ int ExitGame(void)
     
     JY_LoadPicture("",0,0,0);
 
-    JY_UnloadMMap();     //ÊÍ·ÅÖ÷µØÍ¼ÄÚ´æ
+    JY_UnloadMMap();     //é‡Šæ”¾ä¸»åœ°å›¾å†…å­˜
 
-	JY_UnloadSMap();     //ÊÍ·Å³¡¾°µØÍ¼ÄÚ´æ
+	JY_UnloadSMap();     //é‡Šæ”¾åœºæ™¯åœ°å›¾å†…å­˜
 
-    JY_UnloadWarMap();   //ÊÍ·ÅÕ½¶·µØÍ¼ÄÚ´æ
+    JY_UnloadWarMap();   //é‡Šæ”¾æˆ˜æ–—åœ°å›¾å†…å­˜
 
     return 0;
 }
 
 
-//¼ÓÔØÍ¼ĞÎÎÄ¼ş£¬ÆäËû¸ñÊ½Ò²¿ÉÒÔ¼ÓÔØ
-//x,y =-1 Ôò¼ÓÔØµ½ÆÁÄ»ÖĞĞÄ
-//    Èç¹ûÎ´¼ÓÔØ£¬Ôò¼ÓÔØ£¬È»ºóblit£¬Èç¹û¼ÓÔØ£¬Ö±½Óblit
-//  str ÎÄ¼şÃû£¬Èç¹ûÎª¿Õ£¬ÔòÊÍ·Å±íÃæ        
+//åŠ è½½å›¾å½¢æ–‡ä»¶ï¼Œå…¶ä»–æ ¼å¼ä¹Ÿå¯ä»¥åŠ è½½
+//x,y =-1 åˆ™åŠ è½½åˆ°å±å¹•ä¸­å¿ƒ
+//    å¦‚æœæœªåŠ è½½ï¼Œåˆ™åŠ è½½ï¼Œç„¶åblitï¼Œå¦‚æœåŠ è½½ï¼Œç›´æ¥blit
+//  str æ–‡ä»¶åï¼Œå¦‚æœä¸ºç©ºï¼Œåˆ™é‡Šæ”¾è¡¨é¢        
 int JY_LoadPicture(const char* str,int x,int y, int percent)
 {
 	static char filename[255]="\0";
@@ -570,7 +589,7 @@ int JY_LoadPicture(const char* str,int x,int y, int percent)
 
 	SDL_Rect r;
 
-	if(strlen(str)==0){        // Îª¿ÕÔòÊÍ·Å±íÃæ
+	if(strlen(str)==0){        // ä¸ºç©ºåˆ™é‡Šæ”¾è¡¨é¢
 		if(pic){
 			SDL_DestroyTexture(pic);
 			pic=NULL;
@@ -578,7 +597,7 @@ int JY_LoadPicture(const char* str,int x,int y, int percent)
 		return 0;
 	}
 
-	if(strcmp(str,filename)!=0){ // ÓëÒÔÇ°ÎÄ¼şÃû²»Í¬£¬ÔòÊÍ·ÅÔ­À´±íÃæ£¬¼ÓÔØĞÂ±íÃæ
+	if(strcmp(str,filename)!=0){ // ä¸ä»¥å‰æ–‡ä»¶åä¸åŒï¼Œåˆ™é‡Šæ”¾åŸæ¥è¡¨é¢ï¼ŒåŠ è½½æ–°è¡¨é¢
 		if(pic){
 			SDL_DestroyTexture(pic);
 			pic=NULL;
@@ -619,7 +638,7 @@ int JY_LoadPicture(const char* str,int x,int y, int percent)
 
 
 
-//ÏÔÊ¾±íÃæ
+//æ˜¾ç¤ºè¡¨é¢
 int JY_ShowSurface(int flag)
 {
 	int w, h;
@@ -665,7 +684,7 @@ int JY_ShowSurface(int flag)
 }
 
 //#define niba
-//ÑÓÊ±xºÁÃë
+//å»¶æ—¶xæ¯«ç§’
 int JY_Delay(int x)
 {
 #ifdef niba
@@ -677,9 +696,9 @@ int JY_Delay(int x)
 }
 
 
-// »ºÂıÏÔÊ¾Í¼ĞÎ 
-// delaytime Ã¿´Î½¥±äÑÓÊ±ºÁÃëÊı
-// Flag=0 ´Ó°µµ½ÁÁ£¬1£¬´ÓÁÁµ½°µ
+// ç¼“æ…¢æ˜¾ç¤ºå›¾å½¢ 
+// delaytime æ¯æ¬¡æ¸å˜å»¶æ—¶æ¯«ç§’æ•°
+// Flag=0 ä»æš—åˆ°äº®ï¼Œ1ï¼Œä»äº®åˆ°æš—
 int JY_ShowSlow(int delaytime,int Flag)
 {
 	int i;
@@ -712,14 +731,14 @@ int JY_ShowSlow(int delaytime,int Flag)
 	return 0;
 }
 
-//µÃµ½µ±Ç°Ê±¼ä£¬µ¥Î»ºÁÃë
+//å¾—åˆ°å½“å‰æ—¶é—´ï¼Œå•ä½æ¯«ç§’
 int JY_GetTime()
 {
     return SDL_GetTicks();
 }
 
-//²¥·ÅÒôÀÖ
-//²¥·ÅÒôÀÖ
+//æ’­æ”¾éŸ³ä¹
+//æ’­æ”¾éŸ³ä¹
 int JY_PlayMIDI(const char *filename)
 {
 
@@ -733,13 +752,13 @@ int JY_PlayMIDI(const char *filename)
 		return 1;
 	}
 
-	if(strlen(filename)==0){  //ÎÄ¼şÃûÎª¿Õ£¬Í£Ö¹²¥·Å
+	if(strlen(filename)==0){  //æ–‡ä»¶åä¸ºç©ºï¼Œåœæ­¢æ’­æ”¾
         StopMIDI();
         strcpy(currentfile,filename);
 		return 0;
 	}
 	
-	if(strcmp(currentfile,filename)==0) //Óëµ±Ç°²¥·ÅÎÄ¼şÏàÍ¬£¬Ö±½Ó·µ»Ø
+	if(strcmp(currentfile,filename)==0) //ä¸å½“å‰æ’­æ”¾æ–‡ä»¶ç›¸åŒï¼Œç›´æ¥è¿”å›
 		return 0;
 
     StopMIDI();
@@ -783,7 +802,7 @@ int JY_PlayMIDI(const char *filename)
 	return 0;
 }
 
-//Í£Ö¹ÒôĞ§
+//åœæ­¢éŸ³æ•ˆ
 int StopMIDI()
 {
 
@@ -829,7 +848,7 @@ int ResumeMIDI()
 }
 
 
-//²¥·ÅÒôĞ§
+//æ’­æ”¾éŸ³æ•ˆ
 int JY_PlayWAV(const char *filename)
 {
 #if 0
@@ -839,7 +858,7 @@ int JY_PlayWAV(const char *filename)
   if(g_EnableSound==0)
 		return 1;    
 
-	if(WavChunk[currentWav]){          //ÊÍ·Åµ±Ç°ÒôĞ§
+	if(WavChunk[currentWav]){          //é‡Šæ”¾å½“å‰éŸ³æ•ˆ
         //Mix_FreeChunk(WavChunk[currentWav]);
         BASS_SampleStop(WavChunk[currentWav]);
         BASS_SampleFree(WavChunk[currentWav]);
@@ -852,7 +871,7 @@ int JY_PlayWAV(const char *filename)
 	if(WavChunk[currentWav]){
 		ch = BASS_SampleGetChannel(WavChunk[currentWav], 0);
   		BASS_ChannelSetAttribute(ch, BASS_ATTRIB_VOL, (float)(g_SoundVolume / 100.0));
-  		BASS_ChannelFlags(ch, 0, BASS_SAMPLE_LOOP);		//²»Ñ­»·
+  		BASS_ChannelFlags(ch, 0, BASS_SAMPLE_LOOP);		//ä¸å¾ªç¯
   		BASS_ChannelPlay(ch, 0);
 		currentWav++;
 		if(currentWav>=WAVNUM)
@@ -866,16 +885,16 @@ int JY_PlayWAV(const char *filename)
 	if(g_EnableSound==0)
 			return 1;
 
-	if(WavChunk[currentWav]){          //ÊÍ·Åµ±Ç°ÒôĞ§
+	if(WavChunk[currentWav]){          //é‡Šæ”¾å½“å‰éŸ³æ•ˆ
 		Mix_FreeChunk(WavChunk[currentWav]);
 		WavChunk[currentWav]=NULL;
 	}
 
-	WavChunk[currentWav]= Mix_LoadWAV(filename);  //¼ÓÔØµ½µ±Ç°ÒôĞ§
+	WavChunk[currentWav]= Mix_LoadWAV(filename);  //åŠ è½½åˆ°å½“å‰éŸ³æ•ˆ
 
 	if(WavChunk[currentWav]){
 		Mix_VolumeChunk(WavChunk[currentWav],g_SoundVolume);
-		Mix_PlayChannel(-1, WavChunk[currentWav], 0);  //²¥·ÅÒôĞ§
+		Mix_PlayChannel(-1, WavChunk[currentWav], 0);  //æ’­æ”¾éŸ³æ•ˆ
 		currentWav++;
 		if(currentWav>=WAVNUM)
 			currentWav=0;
@@ -952,7 +971,7 @@ int JY_GetKey(int *EventType, int *keyPress, int *x, int *y)
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			*EventType = 3;
-			*keyPress = event.button.button;//1×ó¼ü2ÖĞ3ÓÒ4¹öÂÖÉÏ5¹öÂÖÏÂ
+			*keyPress = event.button.button;//1å·¦é”®2ä¸­3å³4æ»šè½®ä¸Š5æ»šè½®ä¸‹
 			SDL_GetMouseState(x, y);
 			*x = *x * g_ScreenW / device_w;
 			*y = *y * g_ScreenH / device_h;
@@ -961,7 +980,7 @@ int JY_GetKey(int *EventType, int *keyPress, int *x, int *y)
 			break;
 		case SDL_MOUSEBUTTONUP:
 			*EventType = 4;
-			*keyPress = event.button.button;//1×ó¼ü2ÖĞ3ÓÒ4¹öÂÖÉÏ5¹öÂÖÏÂ
+			*keyPress = event.button.button;//1å·¦é”®2ä¸­3å³4æ»šè½®ä¸Š5æ»šè½®ä¸‹
 			SDL_GetMouseState(x, y);
 			*x = *x * g_ScreenW / device_w;
 			*y = *y * g_ScreenH / device_h;
@@ -986,7 +1005,7 @@ int JY_GetMouse(int *x, int *y)
 	return mousemask;
 
 }
-//ÉèÖÃ²Ã¼ô
+//è®¾ç½®è£å‰ª
 int JY_SetClip(int x1,int y1,int x2,int y2)
 {
 
@@ -1014,9 +1033,9 @@ int JY_SetClip(int x1,int y1,int x2,int y2)
 }
 
 
-// »æÖÆ¾ØĞÎ¿ò
-// (x1,y1)--(x2,y2) ¿òµÄ×óÉÏ½ÇºÍÓÒÏÂ½Ç×ø±ê
-// color ÑÕÉ«
+// ç»˜åˆ¶çŸ©å½¢æ¡†
+// (x1,y1)--(x2,y2) æ¡†çš„å·¦ä¸Šè§’å’Œå³ä¸‹è§’åæ ‡
+// color é¢œè‰²
 int JY_DrawRect(int x1,int y1,int x2,int y2,int color)
 {
 	SDL_Rect rect1;
@@ -1061,7 +1080,7 @@ void DrawLine32(int x1, int y1, int x2, int y2, int color)
 	SetRendererColor(color);
 	SDL_RenderDrawLine(g_renderer, x1, y1, x2, y2);
 }
-//»æË®Æ½Ïß
+//ç»˜æ°´å¹³çº¿
 void HLine32(int x1,int x2,int y,int color, unsigned char *vbuffer, int lpitch)
 {
  
@@ -1087,7 +1106,7 @@ void HLine32(int x1,int x2,int y,int color, unsigned char *vbuffer, int lpitch)
 	SetRendererColor(color);
 	SDL_RenderDrawLine(g_renderer, x1, y, x2, y);
 }  
-//»æ´¹Ö±Ïß
+//ç»˜å‚ç›´çº¿
 void VLine32(int y1,int y2,int x,int color, unsigned char *vbuffer, int lpitch)
 {
  
@@ -1116,9 +1135,9 @@ void VLine32(int y1,int y2,int x,int color, unsigned char *vbuffer, int lpitch)
 
 
 
-// Í¼ĞÎÌî³ä
-// Èç¹ûx1,y1,x2,y2¾ùÎª0£¬ÔòÌî³äÕû¸ö±íÃæ
-// color, Ìî³äÉ«£¬ÓÃRGB±íÊ¾£¬´Ó¸ßµ½µÍ×Ö½ÚÎª0RGB
+// å›¾å½¢å¡«å……
+// å¦‚æœx1,y1,x2,y2å‡ä¸º0ï¼Œåˆ™å¡«å……æ•´ä¸ªè¡¨é¢
+// color, å¡«å……è‰²ï¼Œç”¨RGBè¡¨ç¤ºï¼Œä»é«˜åˆ°ä½å­—èŠ‚ä¸º0RGB
 int JY_FillColor(int x1,int y1,int x2,int y2,int color)
 {
 	SDL_Rect rect;
@@ -1146,10 +1165,10 @@ int JY_FillColor(int x1,int y1,int x2,int y2,int color)
 }
 
 
-// °Ñ±íÃæbltµ½±³¾°»òÕßÇ°¾°±íÃæ
-// x,y Òª¼ÓÔØµ½±íÃæµÄ×óÉÏ½Ç×ø±ê
-// °Ñ±íÃæbltµ½±³¾°»òÕßÇ°¾°±íÃæ
-// x,y Òª¼ÓÔØµ½±íÃæµÄ×óÉÏ½Ç×ø±ê
+// æŠŠè¡¨é¢bltåˆ°èƒŒæ™¯æˆ–è€…å‰æ™¯è¡¨é¢
+// x,y è¦åŠ è½½åˆ°è¡¨é¢çš„å·¦ä¸Šè§’åæ ‡
+// æŠŠè¡¨é¢bltåˆ°èƒŒæ™¯æˆ–è€…å‰æ™¯è¡¨é¢
+// x,y è¦åŠ è½½åˆ°è¡¨é¢çš„å·¦ä¸Šè§’åæ ‡
 int BlitSurface(SDL_Texture* lps, int x, int y ,int w, int h, int flag,int value, int pcolor, int nw, int nh)
 {
 
@@ -1169,20 +1188,20 @@ int BlitSurface(SDL_Texture* lps, int x, int y ,int w, int h, int flag,int value
 				return 1;
 			}
 
-			// 0x1 ¾ÓÖĞÏÔÊ¾
-			if (flag & 0x2){		//ÉèÖÃÍ¸Ã÷¶È
+			// 0x1 å±…ä¸­æ˜¾ç¤º
+			if (flag & 0x2){		//è®¾ç½®é€æ˜åº¦
 				SDL_SetTextureAlphaMod(lps, (Uint8)value);
 			}
-			if (flag & 0x4){		//×ÅÉ«
+			if (flag & 0x4){		//ç€è‰²
 				r = (Uint8)((pcolor & 0xFF0000) >> 16);
 				g = (Uint8)((pcolor & 0x00FF00) >> 8);
 				b = (Uint8)((pcolor & 0x0000FF));
 				SDL_SetTextureColorMod(lps, r, g, b);
 			}
-			if (flag & 0x8){		//ÉèÖÃBlend Mode SDL_BLENDMODE_ADD
+			if (flag & 0x8){		//è®¾ç½®Blend Mode SDL_BLENDMODE_ADD
 				SDL_SetTextureBlendMode(lps, SDL_BLENDMODE_ADD);
 			}
-			else if (flag & 0x10){		//ÉèÖÃBlend Mode SDL_BLENDMODE_MOD
+			else if (flag & 0x10){		//è®¾ç½®Blend Mode SDL_BLENDMODE_MOD
 				SDL_SetTextureBlendMode(lps, SDL_BLENDMODE_MOD);
 			}
 			else{
@@ -1196,7 +1215,7 @@ int BlitSurface(SDL_Texture* lps, int x, int y ,int w, int h, int flag,int value
 				nw = nh*w / h;
 			}
 			if (nw > 0 & nh > 0){
-				if ((flag & 0x1)==0){	//¿¼ÂÇÆ«ÒÆ
+				if ((flag & 0x1)==0){	//è€ƒè™‘åç§»
 					rect.x = rect.x + (rect.w - nw) / 2;
 					rect.y = rect.y + (rect.h - nh) / 2;
 				}
@@ -1214,9 +1233,9 @@ int BlitSurface(SDL_Texture* lps, int x, int y ,int w, int h, int flag,int value
 }
 
 
-// ±³¾°±ä°µ
-// °ÑÔ´±íÃæ(x1,y1,x2,y2)¾ØĞÎÄÚµÄËùÓĞµãÁÁ¶È½µµÍ
-// bright ÁÁ¶ÈµÈ¼¶ 0-256 
+// èƒŒæ™¯å˜æš—
+// æŠŠæºè¡¨é¢(x1,y1,x2,y2)çŸ©å½¢å†…çš„æ‰€æœ‰ç‚¹äº®åº¦é™ä½
+// bright äº®åº¦ç­‰çº§ 0-256 
 int JY_Background(int x1,int y1,int x2,int y2,int Bright,int pcolor)
 {
 	SDL_Texture* tex = NULL;
@@ -1271,7 +1290,7 @@ int JY_Gauss(int x1, int y1, int x2, int y2, int n)
 	r1.w = (Uint16)(x2 - x1);
 	r1.h = (Uint16)(y2 - y1);
 
-	pixels = calloc(r1.w*r1.h * 4, 1);  // Ò»ÏñËØÕ¼4×Ö½Ú  
+	pixels = calloc(r1.w*r1.h * 4, 1);  // ä¸€åƒç´ å 4å­—èŠ‚  
 	pitch = r1.w * 4;
 
 	
@@ -1284,7 +1303,7 @@ int JY_Gauss(int x1, int y1, int x2, int y2, int n)
 	gas = SDL_CreateRGBSurface(0, r1.w, r1.h, 32, 0, 0, 0, 0);
 	Uint32* suf_px = (Uint32*)suf->pixels;
 	Uint32* gas_px = (Uint32*)gas->pixels;
-	//¸ßË¹Ä£ºı
+	//é«˜æ–¯æ¨¡ç³Š
 	/*for (int dy = 0; dy < r1.h; dy++){
 		for (int dx = 0; dx < r1.w; dx++){
 			double sumR, sumG, sumB, sum;
@@ -1318,7 +1337,7 @@ int JY_Gauss(int x1, int y1, int x2, int y2, int n)
 			suf_px[r1.w*dy + dx] = ((Uint8)(sumR / sum) << 16) + ((Uint8)(sumG / sum) << 8) + (Uint8)(sumB / sum);
 		}
 	}*/
-	//¾ùÖµÄ£ºı
+	//å‡å€¼æ¨¡ç³Š
 	for (int dy = 0; dy < r1.h; dy++){
 		Uint8 pr[1024], pg[1024], pb[1024];
 		Uint8 apr[1024], apg[1024], apb[1024];
@@ -1350,7 +1369,7 @@ int JY_Gauss(int x1, int y1, int x2, int y2, int n)
 			gas_px[r1.w*dy + dx] = ((sumR / sum) << 16) | ((sumG / sum) << 8) | (sumB / sum);
 		}
 	}
-	//ËÄ½Ç²»Ä£ºı£¬Ô²½ÇĞ§¹û
+	//å››è§’ä¸æ¨¡ç³Šï¼Œåœ†è§’æ•ˆæœ
 	for (int i = 0; i < 7; i++)								{ gas_px[i] = suf_px[i]; }
 	for (int i = r1.w - 7; i < r1.w + 4; i++)				{ gas_px[i] = suf_px[i]; }
 	for (int i = r1.w * 2 - 4; i < r1.w*2 + 3; i++)			{ gas_px[i] = suf_px[i]; }
@@ -1399,7 +1418,7 @@ int JY_Gauss(int x1, int y1, int x2, int y2, int n)
 			suf_px[r1.w*dy + dx] = ((sumR / sum) << 16) + ((sumG / sum) << 8) + (sumB / sum);
 		}
 	}
-	//ËÄ½Ç²»Ä£ºı£¬Ô²½ÇĞ§¹û
+	//å››è§’ä¸æ¨¡ç³Šï¼Œåœ†è§’æ•ˆæœ
 	for (int i = 0; i < 7; i++)								{ suf_px[i] = gas_px[i]; }
 	for (int i = r1.w - 7; i < r1.w + 4; i++)				{ suf_px[i] = gas_px[i]; }
 	for (int i = r1.w * 2 - 4; i < r1.w * 2 + 3; i++)		{ suf_px[i] = gas_px[i]; }
@@ -1433,8 +1452,8 @@ int JY_Gauss(int x1, int y1, int x2, int y2, int n)
 }
 
 
-//²¥·Åmpeg
-// esckey Í£Ö¹²¥·ÅµÄ°´¼ü
+//æ’­æ”¾mpeg
+// esckey åœæ­¢æ’­æ”¾çš„æŒ‰é”®
 int JY_PlayMPEG(const char* filename,int esckey)
 {
 
@@ -1442,7 +1461,7 @@ int JY_PlayMPEG(const char* filename,int esckey)
 } 
 
 
-// È«ÆÁÇĞ»»
+// å…¨å±åˆ‡æ¢
 int JY_FullScreen()
 {    
 
@@ -1452,7 +1471,7 @@ int JY_FullScreen()
 
 
 
-//±£´æÆÁÄ»µ½ÁÙÊ±±íÃæ
+//ä¿å­˜å±å¹•åˆ°ä¸´æ—¶è¡¨é¢
 int JY_SaveSur(int x,int y,int w,int h)
 { 
 	int id=-1;
@@ -1491,7 +1510,7 @@ int JY_SaveSur(int x,int y,int w,int h)
 	return id;
 }
 
-//¼ÓÔØÁÙÊ±±íÃæµ½ÆÁÄ»
+//åŠ è½½ä¸´æ—¶è¡¨é¢åˆ°å±å¹•
 int JY_LoadSur(int id, int x, int y)
 {
 	SDL_Rect r1;
@@ -1509,7 +1528,7 @@ int JY_LoadSur(int id, int x, int y)
 	return 0;
 }
 
-//ÊÍ·Å
+//é‡Šæ”¾
 int JY_FreeSur(int id)
 {
 	if (id<0||id>SURFACE_NUM-1||tmp_Surface[id]==NULL){
