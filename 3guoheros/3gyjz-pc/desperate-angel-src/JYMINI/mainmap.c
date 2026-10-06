@@ -6,10 +6,10 @@
 #include "jymain.h"
 #include <string.h>
 
-// 컴파일러에게 미리 함수들의 존재를 알려주는 선언
-static int LoadMMap_Sub(char *filename, unsigned char **p);
-static int LoadMMap_Part(int x0, int y0);
-static int LoadMMap_Part_Sub(FILE *fp, unsigned char **p);
+// 올바른 타입과 인자 개수로 수정된 함수 미리 선언
+static int LoadMMap_Sub(const char *filename, Sint16 **p);
+static int LoadMMap_Part(int read, int x, int y);
+static int LoadMMap_Part_Sub(FILE *fp, Sint16 **p);
 
  
 //主地图数据
