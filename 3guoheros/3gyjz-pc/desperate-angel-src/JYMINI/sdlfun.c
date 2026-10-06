@@ -806,26 +806,15 @@ int ResumeMIDI() { return 0; }
 
 
 //播放音效
+// 播放音效 (스위치 포팅용 안전 처리)
 int JY_PlayWAV(const char *filename)
 {
+    if (g_EnableSound == 0)
+        return 1;
+
+    // 스위치 빌드 성공을 위해 임시로 오디오 출력을 안전하게 패스합니다.
     return 0;
 }
-	
-	WavChunk[currentWav] = BASS_SampleLoad(0, filename, 0, 0, 1, 0);
-
-	if(WavChunk[currentWav]){
-		ch = BASS_SampleGetChannel(WavChunk[currentWav], 0);
-  		BASS_ChannelSetAttribute(ch, BASS_ATTRIB_VOL, (float)(g_SoundVolume / 100.0));
-  		BASS_ChannelFlags(ch, 0, BASS_SAMPLE_LOOP);		//不循环
-  		BASS_ChannelPlay(ch, 0);
-		currentWav++;
-		if(currentWav>=WAVNUM)
-			currentWav=0;
-	}
-	else{
-		JY_Error("Open wav file %s failed!",filename);
-	}
-#endif
 /*
 	if(g_EnableSound==0)
 			return 1;
