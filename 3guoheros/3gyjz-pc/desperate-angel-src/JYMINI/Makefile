@@ -15,7 +15,7 @@ CFLAGS	+=	-I$(PORTLIBS)/include/SDL2 -I$(PORTLIBS)/include -I$(LIBNX)/include
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(LIBNX)/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
-LIBS := -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lSDL2 -lfreetype -lharfbuzz -lz -lpng -lbz2 -lstdc++ -lgcc -lc
+LIBS := -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lSDL2 -lfreetype -lharfbuzz -lz -lpng -lbz2 -lstdc++ -lgcc -lc -lnx
 LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
