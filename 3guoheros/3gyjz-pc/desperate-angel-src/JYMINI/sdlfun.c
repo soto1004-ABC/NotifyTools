@@ -229,7 +229,7 @@ void JY_AdjustVolume(int iDirectory)
    }
    //g_SoundVolume = g_MusicVolume;
    //Mix_VolumeMusic(g_MusicVolume);
-   BASS_SetVolume((float)(g_MusicVolume / 100.0));
+//   BASS_SetVolume((float)(g_MusicVolume / 100.0));
 }
 
 int getKeyPressByMouseEvent(const SDL_Event *lpEvent)
@@ -411,10 +411,8 @@ int InitSDL(void)
 			so = 44100;
 		}
 
-		if (!BASS_Init(-1, so, 0, 0, NULL)) {
-			JY_Error("Can't initialize device");
-			g_EnableSound=0;
-		}
+		// 스위치 환경에서는 BASS 초기화를 건너뜁니다.
+        g_EnableSound = 0; // 또는 SDL2_mixer 초기화로 대체
 
 		currentWav=0;
 
@@ -452,14 +450,13 @@ int ExitSDL(void)
 	//if(midfonts.font)
 	//	BASS_MIDI_FontFree(midfonts.font);
 
-	for(i=0;i<WAVNUM;i++){
-		if(WavChunk[i]){
-			BASS_SampleFree(WavChunk[i]);
-			 WavChunk[i]=0;
-		}
-	}
-
-	BASS_Free();
+for(i=0;i<WAVNUM;i++){
+    if(WavChunk[i]){
+        // BASS_SampleFree(WavChunk[i]);
+         WavChunk[i]=0;
+    }
+}
+// BASS_Free();
 	/*
 	for(i=0;i<WAVNUM;i++){
 			if(WavChunk[i]){
@@ -803,68 +800,16 @@ int JY_PlayMIDI(const char *filename)
 }
 
 //停止音效
-int StopMIDI()
-{
-
-    if(currentMusic){
-		BASS_ChannelStop(currentMusic);
-		BASS_StreamFree(currentMusic);
-		currentMusic=0;
-		
-	}
-	/*
-	if(currentMusic!=NULL){
-		Mix_HaltMusic();
-		Mix_FreeMusic(currentMusic);
-		currentMusic=NULL;
-	}*/
-    return 0;
-}
-
-int PausedMIDI()
-{
-	if(currentMusic){
-		BASS_ChannelStop(currentMusic);
-
-	}
-	/*
-	if(currentMusic){
-			Mix_HaltMusic();
-			Mix_FreeMusic(currentMusic);
-			//BASS_ChannelStop(currentMusic);
-
-			currentMusic=NULL;
-		}
-	*/
-    return 0;
-}
-int ResumeMIDI()
-{
-	if(currentMusic)
-	{
-		BASS_ChannelPlay(currentMusic, FALSE);
-	}
-	return 0;
-}
+int StopMIDI() { return 0; }
+int PausedMIDI() { return 0; }
+int ResumeMIDI() { return 0; }
 
 
 //播放音效
 int JY_PlayWAV(const char *filename)
 {
-#if 0
-	sndPlaySoundA(filename, 1);
-#else
-	HCHANNEL ch;
-  if(g_EnableSound==0)
-		return 1;    
-
-	if(WavChunk[currentWav]){          //释放当前音效
-        //Mix_FreeChunk(WavChunk[currentWav]);
-        BASS_SampleStop(WavChunk[currentWav]);
-        BASS_SampleFree(WavChunk[currentWav]);
-        WavChunk[currentWav]=0; 
-	}
-
+    return 0;
+}
 	
 	WavChunk[currentWav] = BASS_SampleLoad(0, filename, 0, 0, 1, 0);
 
