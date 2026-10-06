@@ -15,9 +15,7 @@ CFLAGS	+=	-I$(PORTLIBS)/include/SDL2 -I$(PORTLIBS)/include -I$(LIBNX)/include
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS = -specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
-LIBS := -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lSDL2 -lnx -lfreetype -lharfbuzz -lz -lpng -lbz2 -lstdc++ -lgcc -lc
-LIBDIRS	:= $(PORTLIBS) $(LIBNX)
-
+LIBS := -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lSDL2 -lnx -lEGL -lGLESv2 -lglapi -lfreetype -lharfbuzz -lz -lpng -lbz2 -lstdc++ -lgcc -lc
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir))
