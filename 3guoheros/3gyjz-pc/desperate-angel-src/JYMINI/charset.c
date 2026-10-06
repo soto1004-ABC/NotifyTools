@@ -1,43 +1,44 @@
 
-// Êä³öºº×ÖºÍ×Ö·û¼¯×ª»» 
+// è¾“å‡ºæ±‰å­—å’Œå­—ç¬¦é›†è½¬æ¢ 
 
 
-//Îª±£Ö¤Æ½Ì¨¼æÈİĞÔ£¬×Ô¼ºÉú³ÉÁËÒ»¸ögbk¼òÌå/·±Ìå/big5/unicodeµÄÂë±íÎÄ¼ş
-//Í¨¹ı´ËÎÄ¼ş£¬¼´¿É½øĞĞ¸÷ÖÖ¸ñÊ½µÄ×ª»» 
+//ä¸ºä¿è¯å¹³å°å…¼å®¹æ€§ï¼Œè‡ªå·±ç”Ÿæˆäº†ä¸€ä¸ªgbkç®€ä½“/ç¹ä½“/big5/unicodeçš„ç è¡¨æ–‡ä»¶
+//é€šè¿‡æ­¤æ–‡ä»¶ï¼Œå³å¯è¿›è¡Œå„ç§æ ¼å¼çš„è½¬æ¢ 
 
 #include <stdlib.h>
 #include "jymain.h"
 
+#include <string.h>
 
-// ÏÔÊ¾TTF ×Ö·û´®
-// Îª¿ìËÙÏÔÊ¾£¬³ÌĞò½«±£´æÒÑ¾­´ò¿ªµÄÏàÓ¦×ÖºÅµÄ×ÖÌå½á¹¹¡£ÕâÑù×ö¿ÉÒÔ¼Ó¿ì³ÌĞòËÙ¶È
-// Îª¼ò»¯´úÂë£¬Ã»ÓĞÓÃÁ´±í£¬¶øÊÇ²ÉÓÃÊı×éÀ´±£´æ´ò¿ªµÄ×ÖÌå¡£
-// ÓÃÏÈ½øÏÈ³öµÄ·½·¨£¬Ñ­»·¹Ø±ÕÒÑ¾­´ò¿ªµÄ×ÖÌå¡£
-// ¿¼ÂÇµ½Ò»°ã´ò¿ªµÄ×ÖÌå²»¶à£¬±ÈÈç640*480Ä£Ê½Êµ¼ÊÉÏÖ»ÓÃÁË16*24*32ÈıÖÖ×ÖÌå¡£
-// ÉèÖÃÊı×éÎª10ÒÑ¾­×ã¹»¡£
+// æ˜¾ç¤ºTTF å­—ç¬¦ä¸²
+// ä¸ºå¿«é€Ÿæ˜¾ç¤ºï¼Œç¨‹åºå°†ä¿å­˜å·²ç»æ‰“å¼€çš„ç›¸åº”å­—å·çš„å­—ä½“ç»“æ„ã€‚è¿™æ ·åšå¯ä»¥åŠ å¿«ç¨‹åºé€Ÿåº¦
+// ä¸ºç®€åŒ–ä»£ç ï¼Œæ²¡æœ‰ç”¨é“¾è¡¨ï¼Œè€Œæ˜¯é‡‡ç”¨æ•°ç»„æ¥ä¿å­˜æ‰“å¼€çš„å­—ä½“ã€‚
+// ç”¨å…ˆè¿›å…ˆå‡ºçš„æ–¹æ³•ï¼Œå¾ªç¯å…³é—­å·²ç»æ‰“å¼€çš„å­—ä½“ã€‚
+// è€ƒè™‘åˆ°ä¸€èˆ¬æ‰“å¼€çš„å­—ä½“ä¸å¤šï¼Œæ¯”å¦‚640*480æ¨¡å¼å®é™…ä¸Šåªç”¨äº†16*24*32ä¸‰ç§å­—ä½“ã€‚
+// è®¾ç½®æ•°ç»„ä¸º10å·²ç»è¶³å¤Ÿã€‚
 
-static UseFont Font[FONTNUM];         //±£´æÒÑ´ò¿ªµÄ×ÖÌå
+static UseFont Font[FONTNUM];         //ä¿å­˜å·²æ‰“å¼€çš„å­—ä½“
 
 static int currentFont=0;
 
-//×Ö·û¼¯×ª»»Êı×é
-static Uint16 gbkj_f[128][256];        //GBK¼òÌå-->·±Ìå
+//å­—ç¬¦é›†è½¬æ¢æ•°ç»„
+static Uint16 gbkj_f[128][256];        //GBKç®€ä½“-->ç¹ä½“
 static Uint16 gbkf_j[128][256] ;
 static Uint16 gbk_unicode[128][256] ;
 static Uint16 gbk_big5[128][256] ;
 static Uint16 big5_gbk[128][256] ;
 
-extern  SDL_Renderer* g_renderer;   //ÆÁÄ»±íÃæ
+extern  SDL_Renderer* g_renderer;   //å±å¹•è¡¨é¢
 extern int g_ScreenBpp ;
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 int InitFont()
 {
     int i;
 
-	TTF_Init();  // ³õÊ¼»¯sdl_ttf
+	TTF_Init();  // åˆå§‹åŒ–sdl_ttf
 
-    for(i=0;i<FONTNUM;i++){   //×ÖÌåÊı¾İ³õÖµ
+    for(i=0;i<FONTNUM;i++){   //å­—ä½“æ•°æ®åˆå€¼
         Font[i].size =0;
 	    Font[i].name=NULL;
 		Font[i].font =NULL;
@@ -46,12 +47,12 @@ int InitFont()
 	return 0;
 }
 
-//ÊÍ·Å×ÖÌå½á¹¹
+//é‡Šæ”¾å­—ä½“ç»“æ„
 int ExitFont()
 {
     int i;
 
-    for(i=0;i<FONTNUM;i++){  //ÊÍ·Å×ÖÌåÊı¾İ
+    for(i=0;i<FONTNUM;i++){  //é‡Šæ”¾å­—ä½“æ•°æ®
 		if(Font[i].font){
 			TTF_CloseFont(Font[i].font);
 		}
@@ -64,28 +65,28 @@ int ExitFont()
 }
 
 
-// ¸ù¾İ×ÖÌåÎÄ¼şÃûºÍ×ÖºÅ´ò¿ª×ÖÌå
-// size Îª°´ÏñËØ´óĞ¡µÄ×ÖºÅ
+// æ ¹æ®å­—ä½“æ–‡ä»¶åå’Œå­—å·æ‰“å¼€å­—ä½“
+// size ä¸ºæŒ‰åƒç´ å¤§å°çš„å­—å·
 static TTF_Font *GetFont(const char *filename,int size)
 {
     int i;
 	TTF_Font *myfont=NULL;
 	//filename = "./data/font.ttc";
-	for(i=0;i<FONTNUM;i++){   //  ÅĞ¶Ï×ÖÌåÊÇ·ñÒÑ´ò¿ª
+	for(i=0;i<FONTNUM;i++){   //  åˆ¤æ–­å­—ä½“æ˜¯å¦å·²æ‰“å¼€
 		if((Font[i].size ==size) && (Font[i].name) && (strcmp(filename,Font[i].name)==0) ){   
 			myfont=Font[i].font ;
 			break;
 		}
     }
 
-	if(myfont==NULL){    //Ã»ÓĞ´ò¿ª
-		myfont =TTF_OpenFont(filename,size);           //´ò¿ªĞÂ×ÖÌå
+	if(myfont==NULL){    //æ²¡æœ‰æ‰“å¼€
+		myfont =TTF_OpenFont(filename,size);           //æ‰“å¼€æ–°å­—ä½“
 		if(myfont==NULL){
 			JY_Error("GetFont error: can not open font file %s\n",filename);
 			return NULL;
 		}
 		Font[currentFont].size =size;
-		if(Font[currentFont].font)           //Ö±½Ó¹Ø±Õµ±Ç°×ÖÌå¡£
+		if(Font[currentFont].font)           //ç›´æ¥å…³é—­å½“å‰å­—ä½“ã€‚
             TTF_CloseFont(Font[currentFont].font);
 
         Font[currentFont].font=myfont; 
@@ -94,7 +95,7 @@ static TTF_Font *GetFont(const char *filename,int size)
         Font[currentFont].name =(char*)malloc(strlen(filename)+1);
 		strcpy(Font[currentFont].name,filename);
         
-        currentFont++;           // Ôö¼Ó¶ÓÁĞÈë¿Ú¼ÆÊı
+        currentFont++;           // å¢åŠ é˜Ÿåˆ—å…¥å£è®¡æ•°
 		if(currentFont==FONTNUM)                  
 			currentFont=0;
 	}
@@ -103,12 +104,12 @@ static TTF_Font *GetFont(const char *filename,int size)
 
 }
 
-// ºº×Ö×Ö·û¼¯×ª»»
+// æ±‰å­—å­—ç¬¦é›†è½¬æ¢
 // flag = 0   Big5 --> GBK     
 //      = 1   GBK  --> Big5    
 //      = 2   Big5 --> Unicode
 //      = 3   GBK  --> Unicode
-// ×¢ÒâÒª±£Ö¤destÓĞ×ã¹»µÄ¿Õ¼ä£¬Ò»°ã½¨ÒéÈ¡src³¤¶ÈµÄÁ½±¶+1£¬±£Ö¤È«Ó¢ÎÄ×Ö·ûÒ²ÄÜ×ª»¯Îªunicode
+// æ³¨æ„è¦ä¿è¯destæœ‰è¶³å¤Ÿçš„ç©ºé—´ï¼Œä¸€èˆ¬å»ºè®®å–srcé•¿åº¦çš„ä¸¤å€+1ï¼Œä¿è¯å…¨è‹±æ–‡å­—ç¬¦ä¹Ÿèƒ½è½¬åŒ–ä¸ºunicode
 int  JY_CharSet(const char *src, char *dest, int flag)
 {
  
@@ -122,24 +123,24 @@ int  JY_CharSet(const char *src, char *dest, int flag)
 
     while(1){
         b0=*psrc;
-		if(b0==0){       //×Ö·û´®½áÊø
+		if(b0==0){       //å­—ç¬¦ä¸²ç»“æŸ
 			if( (flag==0) || (flag==1) ){
 				*pdest=0;
 				break;
 			}
-			else{    //unicode½áÊø±êÖ¾ 0x0000?
+			else{    //unicodeç»“æŸæ ‡å¿— 0x0000?
 				*pdest=0;
 				*(pdest+1)=0;
 				break;                
 			}
 		}
-		if(b0<128){      //Ó¢ÎÄ×Ö·û
-			if( (flag==0) || (flag==1) ){  //²»×ª»»
+		if(b0<128){      //è‹±æ–‡å­—ç¬¦
+			if( (flag==0) || (flag==1) ){  //ä¸è½¬æ¢
 				*pdest=b0;
 				pdest++;
 				psrc++;
 			}
-			else{                //unicode ºóÃæ¼Ó¸ö0
+			else{                //unicode åé¢åŠ ä¸ª0
 				*pdest=b0;
 				pdest++;
 				*pdest=0;
@@ -147,9 +148,9 @@ int  JY_CharSet(const char *src, char *dest, int flag)
 				psrc++;                
 			}
 		}
-		else{              //ÖĞÎÄ×Ö·û
+		else{              //ä¸­æ–‡å­—ç¬¦
 			b1=*(psrc+1);
-            if(b1==0){     // ·ÇÕı³£½áÊø
+            if(b1==0){     // éæ­£å¸¸ç»“æŸ
                 *pdest='?';
 				*(pdest+1)=0;
 				break;
@@ -192,14 +193,14 @@ int  JY_CharSet(const char *src, char *dest, int flag)
 }
 
 
-// Ğ´×Ö·û´®
-// x,y ×ø±ê
-// str ×Ö·û´®
-// color ÑÕÉ«
-// size ×ÖÌå´óĞ¡£¬×ÖĞÎÎªËÎÌå¡£ 
-// fontname ×ÖÌåÃû
-// charset ×Ö·û¼¯ 0 GBK 1 big5
-// OScharset ÎŞÓÃ
+// å†™å­—ç¬¦ä¸²
+// x,y åæ ‡
+// str å­—ç¬¦ä¸²
+// color é¢œè‰²
+// size å­—ä½“å¤§å°ï¼Œå­—å½¢ä¸ºå®‹ä½“ã€‚ 
+// fontname å­—ä½“å
+// charset å­—ç¬¦é›† 0 GBK 1 big5
+// OScharset æ— ç”¨
 int JY_DrawStr(int x, int y, const char *str,int color,int size,const char *fontname, 
 			   int charset, int OScharset)
 {
@@ -213,7 +214,7 @@ int JY_DrawStr(int x, int y, const char *str,int color,int size,const char *font
 	    TTF_Font *myfont;
 //		SDL_Surface *tempSurface;
 
-		//Ã»ÓĞÄÚÈİ²»ÏÔÊ¾
+		//æ²¡æœ‰å†…å®¹ä¸æ˜¾ç¤º
 		if(strlen(str) == 0)
 			return 0;
 
@@ -232,18 +233,18 @@ int JY_DrawStr(int x, int y, const char *str,int color,int size,const char *font
 		c.b=(Uint8) ((color & 0xff));
 
 
-	    if(charset==0 &&  OScharset==0){//GBK -->unicode¼òÌå
+	    if(charset==0 &&  OScharset==0){//GBK -->unicodeç®€ä½“
 	         JY_CharSet(str,tmp2,3);
 		}
-		else if(charset==0 &&  OScharset==1){//GBK -->unicode·±Ìå
+		else if(charset==0 &&  OScharset==1){//GBK -->unicodeç¹ä½“
 	        JY_CharSet(str,tmp1,1);
 	        JY_CharSet(tmp1,tmp2,2);
 		}
-	    else if(charset==1 &&  OScharset==0){ //big5-->unicode¼òÌå
+	    else if(charset==1 &&  OScharset==0){ //big5-->unicodeç®€ä½“
 	        JY_CharSet(str,tmp1,0);
 	        JY_CharSet(tmp1,tmp2,3);
 		}
-		else if(charset==1 &&  OScharset==1){  ////big5-->unicode·±Ìå
+		else if(charset==1 &&  OScharset==1){  ////big5-->unicodeç¹ä½“
 	        JY_CharSet(str,tmp2,2);
 		}
 		else{
@@ -265,7 +266,7 @@ int JY_DrawStr(int x, int y, const char *str,int color,int size,const char *font
 
 		fontTex = SDL_CreateTextureFromSurface(g_renderer, fontSurface);
 	//	printf(SDL_GetError());
-		SDL_FreeSurface(fontSurface);   //ÊÍ·Å±íÃæ
+		SDL_FreeSurface(fontSurface);   //é‡Šæ”¾è¡¨é¢
 
 		SDL_RenderCopy(g_renderer, fontTex, NULL, &rect1);
 		SDL_DestroyTexture(fontTex);
@@ -284,7 +285,7 @@ int JY_DrawStr2(int x, int y, const char *str, int color, int size, const char *
 	TTF_Font *myfont;
 	//		SDL_Surface *tempSurface;
 
-	//Ã»ÓĞÄÚÈİ²»ÏÔÊ¾
+	//æ²¡æœ‰å†…å®¹ä¸æ˜¾ç¤º
 	if (strlen(str) == 0)
 		return 0;
 
@@ -303,18 +304,18 @@ int JY_DrawStr2(int x, int y, const char *str, int color, int size, const char *
 	c.b = (Uint8)((color & 0xff));
 
 
-	if (charset == 0 && OScharset == 0){//GBK -->unicode¼òÌå
+	if (charset == 0 && OScharset == 0){//GBK -->unicodeç®€ä½“
 		JY_CharSet(str, tmp2, 3);
 	}
-	else if (charset == 0 && OScharset == 1){//GBK -->unicode·±Ìå
+	else if (charset == 0 && OScharset == 1){//GBK -->unicodeç¹ä½“
 		JY_CharSet(str, tmp1, 1);
 		JY_CharSet(tmp1, tmp2, 2);
 	}
-	else if (charset == 1 && OScharset == 0){ //big5-->unicode¼òÌå
+	else if (charset == 1 && OScharset == 0){ //big5-->unicodeç®€ä½“
 		JY_CharSet(str, tmp1, 0);
 		JY_CharSet(tmp1, tmp2, 3);
 	}
-	else if (charset == 1 && OScharset == 1){  ////big5-->unicode·±Ìå
+	else if (charset == 1 && OScharset == 1){  ////big5-->unicodeç¹ä½“
 		JY_CharSet(str, tmp2, 2);
 	}
 	else{
@@ -330,7 +331,7 @@ int JY_DrawStr2(int x, int y, const char *str, int color, int size, const char *
 
 	fontTex = SDL_CreateTextureFromSurface(g_renderer, fontSurface);
 	//	printf(SDL_GetError());
-	SDL_FreeSurface(fontSurface);   //ÊÍ·Å±íÃæ
+	SDL_FreeSurface(fontSurface);   //é‡Šæ”¾è¡¨é¢
 
 	rect1.x = (Sint16)(x-1);
 	rect1.y = (Sint16)(y-1);
@@ -361,8 +362,8 @@ int JY_DrawStr2(int x, int y, const char *str, int color, int size, const char *
 
   
 
-//¼ÓÔØÂë±íÎÄ¼ş
-//Âë±íÎÄ¼ş°´ÕÕGBKË³ĞòÅÅĞò£¬Ã¿¸öGBK×Ö·û¶ÔÓ¦Èı¸ö×Ö·û£ºgbkf,big5,unicode
+//åŠ è½½ç è¡¨æ–‡ä»¶
+//ç è¡¨æ–‡ä»¶æŒ‰ç…§GBKé¡ºåºæ’åºï¼Œæ¯ä¸ªGBKå­—ç¬¦å¯¹åº”ä¸‰ä¸ªå­—ç¬¦ï¼šgbkf,big5,unicode
 int LoadMB(const char* mbfile)
 {
 	FILE *fp;
@@ -405,7 +406,7 @@ int LoadMB(const char* mbfile)
 				}
 				gbk_unicode[i-128][j]=unicode;
 
-				if(gbkj_f[i-128][j]==0){   //Ã»ÓĞ¼òÌå
+				if(gbkj_f[i-128][j]==0){   //æ²¡æœ‰ç®€ä½“
 				    gbk_big5[i-128][j]=big5;
 				    big5_gbk[(big5 & 0xff) & 0x7F][( big5 & 0xff00)>>8]=gbk;
 				}
