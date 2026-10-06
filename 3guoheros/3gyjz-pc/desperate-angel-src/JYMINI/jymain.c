@@ -15,10 +15,10 @@ SDL_Window* g_window;
 SDL_Renderer* g_renderer;
 SDL_Texture* g_screenTex;
 
-int g_ScreenW=480 ;         // 屏幕宽高
-int g_ScreenH=800 ;
-int device_w=480 ;
-int device_h=800 ;
+int g_ScreenW=1280 ;         // 屏幕宽高
+int g_ScreenH=720 ;
+int device_w=1280 ;
+int device_h=720 ;
 int g_ScreenBpp=16 ;         // 屏幕色深
 int g_FullScreen=0;
 int g_EnableSound=1;         // 声音开关 0 关闭 1 打开
@@ -312,24 +312,28 @@ void draw3()
 
 int main_android()
 {
-	device_w = g_ScreenW=768;
-	device_h = g_ScreenH=480;
+	// 스위치 표준 해상도인 1280x720으로 설정
+	device_w = g_ScreenW = 1280;
+	device_h = g_ScreenH = 720;
+	
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 	g_window = SDL_CreateWindow("JY_LLK",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		1280, 800,
+		1280, 720,
 		0);
 	g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-	g_screenTex = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 1280, 800);
+	
+	// 텍스처 크기도 1280x720으로 일치시킴
+	g_screenTex = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, 1280, 720);
 	SDL_SetTextureBlendMode(g_screenTex, SDL_BLENDMODE_BLEND);
-	SDL_RenderSetScale(g_renderer,1280 / 768, 800 / 480);
+	
+	// 렌더 스케일 비율을 1.0(1대1 꽉 찬 화면)으로 정렬
+	SDL_RenderSetScale(g_renderer, 1.0f, 1.0f);
+	
 	SDL_SetRenderTarget(g_renderer, g_screenTex);
 	SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
 	SDL_RenderClear(g_renderer);
-	Sprite sprite = LoadSprite("C:\\Users\\sf\\Desktop\\60.bmp", g_renderer);
-	if (sprite.texture == NULL)
-		exit(2);
 
 	/* Main render loop */
 	Uint8 done = 0;
@@ -345,7 +349,8 @@ int main_android()
 			}
 		}
 
-		draw2(g_window, g_renderer, sprite);
+		// 기존 그리기 함수 호출
+		draw3();
 
 		/* Update the screen! */
 		SDL_RenderPresent(g_renderer);
@@ -355,7 +360,6 @@ int main_android()
 
 	exit(0);
 }
-
 // 主程序入口
 int main(int argc, char *argv [])
 {
