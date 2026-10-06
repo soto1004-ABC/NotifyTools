@@ -14,7 +14,7 @@ CFLAGS	:=	-g -Wall -O2 -ffunction-sections $(ARCH) -D__SWITCH__
 CFLAGS	+=	-I$(PORTLIBS)/include/SDL2 -I$(PORTLIBS)/include -I$(LIBNX)/include
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS	:=	-g $(ARCH)
-LDFLAGS = -specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -L$(DEVKITPRO)/portlibs/switch/lib -Wl,-Map,$(notdir $*.map)
+LDFLAGS = -specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -L$(DEVKITPRO)/portlibs/switch/lib -L$(DEVKITPRO)/libnx -Wl,-Map,$(notdir $*.map)
 LIBS := -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lSDL2 -lnx -lEGL -lGLESv2 -lglapi -lfreetype -lharfbuzz -lbz2 -lz -lpng -lstdc++ -lgcc -lc
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
