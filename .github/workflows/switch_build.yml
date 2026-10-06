@@ -1,0 +1,33 @@
+name: Switch NRO Build
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build-switch:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Switch SDL2 Libraries
+        run: |
+          dkp-pacman -Syyu --noconfirm
+          dkp-pacman -S --noconfirm switch-sdl2 switch-sdl2_image switch-sdl2_ttf switch-sdl2_mixer switch-freetype switch-zlib switch-libpng
+
+      - name: Compile NRO
+        run: |
+          cd 3guoheros/3gyjz-pc/desperate-angel-src/JYMINI
+          make
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: switch-build-result
+          path: 3guoheros/3gyjz-pc/desperate-angel-src/JYMINI/*.nro
