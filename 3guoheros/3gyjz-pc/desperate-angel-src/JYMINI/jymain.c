@@ -275,10 +275,10 @@ int main_android()
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 	
 	// 스위치 디스플레이 규격에 맞춘 풀스크린 창 생성
-	g_window = SDL_CreateWindow("JY_LLK",
+	g_window = SDL_CreateWindow("3guohero_switch",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		1280, 720,
-		SDL_WINDOW_FULLSCREEN_DESKTOP);
+		SDL_WINDOW_FULLSCREEN_DESKTOP); // 이 플래그가 들어가야 화면 전체로 확장됩니다.
 		
 	g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
