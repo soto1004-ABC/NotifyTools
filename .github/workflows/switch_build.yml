@@ -9,16 +9,14 @@ jobs:
   build-switch:
     runs-on: ubuntu-latest
     container:
-      image: devkitpro/devkita64:latest
+      # 기존 devkita64 대신 모든 라이브러리가 포함된 devkitswitch 사용
+      image: devkitpro/devkitswitch:latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Switch SDL2 Libraries
-        run: |
-          dkp-pacman -Syyu --noconfirm
-          dkp-pacman -S --noconfirm switch-sdl2 switch-sdl2_image switch-sdl2_ttf switch-sdl2_mixer switch-freetype switch-zlib switch-libpng
+      # 차단당하는 라이브러리 다운로드 단계(dkp-pacman) 삭제
 
       - name: Compile NRO
         run: |
