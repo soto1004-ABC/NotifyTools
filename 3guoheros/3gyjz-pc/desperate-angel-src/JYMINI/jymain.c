@@ -274,16 +274,16 @@ int main_android()
 	
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 	
-	// ⭐ 스위치 화면 크기를 확실하게 잡기 위해 가로/세로를 0으로 주고 하드웨어 가속 플래그를 명시합니다.
+	// 스위치 디스플레이 규격에 맞춘 풀스크린 창 생성
 	g_window = SDL_CreateWindow("JY_LLK",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		0, 0,
-		SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_SHOWN);
+		1280, 720,
+		SDL_WINDOW_FULLSCREEN_DESKTOP);
 		
 	g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	
-	// ⭐ 스위치 화면 스케일을 1280x720 뷰포트에 강제로 꽉 채우도록 설정
+	// 논리적 해상도 고정 (구석에 작게 찌그러지는 현상 방지)
 	SDL_RenderSetLogicalSize(g_renderer, 1280, 720);
 
 	Uint8 done = 0;
@@ -298,11 +298,13 @@ int main_android()
 			}
 		}
 
+		// 화면 클리어 후 직접 렌더링 (텍스처 타겟 충돌 방지)
 		SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
 		SDL_RenderClear(g_renderer);
-		draw3();
-		SDL_RenderPresent(g_renderer);
+		
+		draw3(); // 내부 UI 및 배경 렌더링 함수
 
+		SDL_RenderPresent(g_renderer);
 		SDL_Delay(10);
 	}
 
