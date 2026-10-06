@@ -8,18 +8,16 @@
 #include "jymain.h"
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
-    // --- 이 위치에 작업 디렉토리 강제 고정 코드 추가 ---
 #ifdef __SWITCH__
-    // 스위치 환경일 경우 .nro와 리소스가 위치한 SD 카드 폴더로 경로 강제 이동
     chdir("sdmc:/switch/3guohero");
 #endif
 
-    // 기존 초기화 코드들...
-    InitSDL();
-    ...
+    // 기존 코드들 이어서 작성...
+    return 0;
 }
 // 全程变量
 
