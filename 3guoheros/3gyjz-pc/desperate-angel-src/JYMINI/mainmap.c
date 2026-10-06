@@ -1,12 +1,13 @@
 
-//»æÖÆÖ÷µØÍ¼¡¢³¡¾°µØÍ¼ºÍÕ½¶·µØÍ¼
-//Îª¼Ó¿ìËÙ¶È£¬ÕâĞ©º¯Êı¸ÄÎªcÖĞÊµÏÖ
+//ç»˜åˆ¶ä¸»åœ°å›¾ã€åœºæ™¯åœ°å›¾å’Œæˆ˜æ–—åœ°å›¾
+//ä¸ºåŠ å¿«é€Ÿåº¦ï¼Œè¿™äº›å‡½æ•°æ”¹ä¸ºcä¸­å®ç°
 
 #include <stdlib.h> 
 #include "jymain.h"
+#include <string.h>
 
  
-//Ö÷µØÍ¼Êı¾İ
+//ä¸»åœ°å›¾æ•°æ®
 static Sint16  *pEarth=NULL;
 static Sint16  *pSurface=NULL;
 static Sint16  *pBuilding=NULL;
@@ -15,7 +16,7 @@ static Sint16  *pBuildY=NULL;
 
 static Sint16 *tmp_M=NULL;
 
-//Ö÷µØÍ¼ÎÄ¼şÃû
+//ä¸»åœ°å›¾æ–‡ä»¶å
 static FILE *fpEarth=NULL;
 static FILE *fpSurface=NULL;
 static FILE *fpBuilding=NULL;
@@ -23,32 +24,32 @@ static FILE *fpBuildX=NULL;
 static FILE *fpBuildY=NULL;
 
 
-static int M_XMax,M_YMax;  //Ö÷µØÍ¼´óĞ¡
+static int M_XMax,M_YMax;  //ä¸»åœ°å›¾å¤§å°
 
-static int M_X0,M_Y0;     //²¿·Ö¶ÁÈ¡Ö÷µØÍ¼µÄÆğÊ¼×ø±ê
-static int M_Scope;       //²¿·Ö¶ÁÈ¡Ö÷µØÍ¼Ê±µÄ×ø±ê·¶Î§¡£Ã¿´ÎÏÔÊ¾Ö÷µØÍ¼·ÃÎÊ×ø±ê·¶Î§Îª´ËÖµµÄÁ½±¶¡£¶øÔ¤¶ÁµÄÖ÷µØÍ¼·¶Î§Îª4±¶¡£
+static int M_X0,M_Y0;     //éƒ¨åˆ†è¯»å–ä¸»åœ°å›¾çš„èµ·å§‹åæ ‡
+static int M_Scope;       //éƒ¨åˆ†è¯»å–ä¸»åœ°å›¾æ—¶çš„åæ ‡èŒƒå›´ã€‚æ¯æ¬¡æ˜¾ç¤ºä¸»åœ°å›¾è®¿é—®åæ ‡èŒƒå›´ä¸ºæ­¤å€¼çš„ä¸¤å€ã€‚è€Œé¢„è¯»çš„ä¸»åœ°å›¾èŒƒå›´ä¸º4å€ã€‚
 static int old_M_Y0=-1;
  
-static int BuildNumber;     //Êµ¼ÊÅÅĞò¸öÊı
+static int BuildNumber;     //å®é™…æ’åºä¸ªæ•°
 
-static BuildingType Build[2000];        // ½¨ÖşÅÅĞòÊı×é
+static BuildingType Build[2000];        // å»ºç­‘æ’åºæ•°ç»„
   
-static int S_XMax,S_YMax;      // ³¡¾°µØÍ¼´óĞ¡
+static int S_XMax,S_YMax;      // åœºæ™¯åœ°å›¾å¤§å°
 static int S_Num;
-static Sint16 *pS=NULL;              // ³¡¾°S*Êı¾İ
+static Sint16 *pS=NULL;              // åœºæ™¯S*æ•°æ®
 
-// Îª¼õÉÙÄÚ´æÕ¼ÓÃ£¬¶ÔSÎÄ¼ş²ÉÓÃÁÙÊ±ÎÄ¼ş·½Ê½·ÃÎÊ£¬Ö»ÔÚÄÚ´æÖĞ±£´æµ±Ç°³¡¾°µÄSÊı¾İ
-static char TempS_filename[255];     //ÁÙÊ±SÎÄ¼şÃû
-static int currentS=-1;              //µ±Ç°¼ÓÔØµÄ³¡¾°SÊı¾İ
+// ä¸ºå‡å°‘å†…å­˜å ç”¨ï¼Œå¯¹Sæ–‡ä»¶é‡‡ç”¨ä¸´æ—¶æ–‡ä»¶æ–¹å¼è®¿é—®ï¼Œåªåœ¨å†…å­˜ä¸­ä¿å­˜å½“å‰åœºæ™¯çš„Sæ•°æ®
+static char TempS_filename[255];     //ä¸´æ—¶Sæ–‡ä»¶å
+static int currentS=-1;              //å½“å‰åŠ è½½çš„åœºæ™¯Sæ•°æ®
 
-static int D_Num1;             // Ã¿¸ö³¡¾°DµÄ¸öÊı
-static int D_Num2;             // Ã¿¸öDµÄÊı¾İ¸öÊı
+static int D_Num1;             // æ¯ä¸ªåœºæ™¯Dçš„ä¸ªæ•°
+static int D_Num2;             // æ¯ä¸ªDçš„æ•°æ®ä¸ªæ•°
 
-static Sint16 *pD=NULL;              // ³¡¾°D*Êı¾İ
+static Sint16 *pD=NULL;              // åœºæ™¯D*æ•°æ®
 
-static int War_XMax,War_YMax;      // Õ½¶·µØÍ¼´óĞ¡
-static int War_Num;                // Õ½¶·µØÍ¼²ãÊı
-static Sint16 *pWar=NULL;           // Õ½¶·µØÍ¼Êı¾İ
+static int War_XMax,War_YMax;      // æˆ˜æ–—åœ°å›¾å¤§å°
+static int War_Num;                // æˆ˜æ–—åœ°å›¾å±‚æ•°
+static Sint16 *pWar=NULL;           // æˆ˜æ–—åœ°å›¾æ•°æ®
 
 
 extern int g_ScreenW;
@@ -73,7 +74,7 @@ extern int g_LoadMMapScope;
 
 extern SDL_Texture* g_WarMoveTex[4];
 
-// ¶ÁÈ¡Ö÷µØÍ¼Êı¾İ
+// è¯»å–ä¸»åœ°å›¾æ•°æ®
 int JY_LoadMMap(const char* earthname, const char* surfacename, const char*buildingname,
 				const char* buildxname, const char* buildyname, int x_max, int y_max,int x,int y)
 {
@@ -84,16 +85,16 @@ int JY_LoadMMap(const char* earthname, const char* surfacename, const char*build
 
     JY_UnloadMMap();
 
-	if(g_LoadMMapType==0){   //È«²¿¶ÁÈ¡
+	if(g_LoadMMapType==0){   //å…¨éƒ¨è¯»å–
 	    LoadMMap_Sub(earthname,&pEarth);
 		LoadMMap_Sub(surfacename,&pSurface);
 		LoadMMap_Sub(buildingname,&pBuilding);
 		LoadMMap_Sub(buildxname,&pBuildX);
 		LoadMMap_Sub(buildyname,&pBuildY);
 	}
-	else{                  //²¿·Ö¶ÁÈ¡
+	else{                  //éƒ¨åˆ†è¯»å–
 
-		int rangex=g_ScreenW/(2*g_XScale)/2+1+g_MMapAddX;   //¼ÆËãÖ÷µØÍ¼·ÃÎÊ×ø±ê·¶Î§
+		int rangex=g_ScreenW/(2*g_XScale)/2+1+g_MMapAddX;   //è®¡ç®—ä¸»åœ°å›¾è®¿é—®åæ ‡èŒƒå›´
 		int rangey=g_ScreenH/(2*g_YScale)/2+1;
 		
 		M_Scope=rangex+rangey+g_MMapAddY+5;       
@@ -105,7 +106,7 @@ int JY_LoadMMap(const char* earthname, const char* surfacename, const char*build
 
 		JY_Debug("Load MMap Scope=%d",M_Scope);
 
-		if((fpEarth=fopen(earthname,"rb"))==NULL){         //´ò¿ªÖ÷µØÍ¼ÎÄ¼ş¾ä±ú
+		if((fpEarth=fopen(earthname,"rb"))==NULL){         //æ‰“å¼€ä¸»åœ°å›¾æ–‡ä»¶å¥æŸ„
 			JY_Error("file not open ---%s",earthname);
 			return 1;
 		}
@@ -125,14 +126,14 @@ int JY_LoadMMap(const char* earthname, const char* surfacename, const char*build
 			JY_Error("file not open ---%s",buildyname);
 			return 1;
 		}
-        LoadMMap_Part(1,  x,  y);   //²¿·Ö¶ÁÈ¡Ö÷µØÍ¼
+        LoadMMap_Part(1,  x,  y);   //éƒ¨åˆ†è¯»å–ä¸»åœ°å›¾
 	}
 
     return 0;
 
 }
 
-//È«²¿¶ÁÈ¡Ö÷µØÍ¼ 
+//å…¨éƒ¨è¯»å–ä¸»åœ°å›¾ 
 int LoadMMap_Sub(const char*filename,Sint16 **p)
 {
 	FILE *fp;
@@ -154,20 +155,20 @@ int LoadMMap_Sub(const char*filename,Sint16 **p)
 
 
 
-//²¿·Ö¶ÁÈ¡Ö÷µØÍ¼Êı¾İ
-// read 0 ¸ù¾İĞèÒª¶ÁÈ¡  1 Ç¿ÖÆ¶ÁÈ¡
+//éƒ¨åˆ†è¯»å–ä¸»åœ°å›¾æ•°æ®
+// read 0 æ ¹æ®éœ€è¦è¯»å–  1 å¼ºåˆ¶è¯»å–
 int LoadMMap_Part(int read,int x,int y)
 {
 	int x1,y1,x2,y2;
 
-	if(read==0){  //¼ÆËãÊÇ·ñĞèÒª¶ÁÈ¡Ö÷µØÍ¼Êı¾İ
-		x1=limitX(x-M_Scope,0,M_XMax-1);     //ÏÔÊ¾µØÍ¼Ê±¶ÁÈ¡µÄ×óÉÏ½ÇºÍÓÒÏÂ½Ç×ø±ê
+	if(read==0){  //è®¡ç®—æ˜¯å¦éœ€è¦è¯»å–ä¸»åœ°å›¾æ•°æ®
+		x1=limitX(x-M_Scope,0,M_XMax-1);     //æ˜¾ç¤ºåœ°å›¾æ—¶è¯»å–çš„å·¦ä¸Šè§’å’Œå³ä¸‹è§’åæ ‡
 		y1=limitX(y-M_Scope,0,M_YMax-1);
 		x2=limitX(x+M_Scope,0,M_XMax-1);
 		y2=limitX(y+M_Scope,0,M_YMax-1);
 
 		if(g_LoadMMapType==1){
-			if(x1<0 || y1<M_Y0 || x2 >= M_XMax || y2>=M_Y0+4*M_Scope){  //×ø±ê³¬³ö·¶Î§£¬ĞèÒª¶ÁÈ¡
+			if(x1<0 || y1<M_Y0 || x2 >= M_XMax || y2>=M_Y0+4*M_Scope){  //åæ ‡è¶…å‡ºèŒƒå›´ï¼Œéœ€è¦è¯»å–
 				read=1;
 			}
 		}
@@ -183,7 +184,7 @@ int LoadMMap_Part(int read,int x,int y)
 			M_X0=0;
 		}
 		else{
-		    M_X0=limitX(x-2*M_Scope,0,M_XMax-4*M_Scope);  //¶ÁÈ¡Ö÷µØÍ¼µÄ×óÉÏ½Ç×ø±ê
+		    M_X0=limitX(x-2*M_Scope,0,M_XMax-4*M_Scope);  //è¯»å–ä¸»åœ°å›¾çš„å·¦ä¸Šè§’åæ ‡
 		}
 		M_Y0=limitX(y-2*M_Scope,0,M_YMax-4*M_Scope);
 
@@ -199,25 +200,25 @@ int LoadMMap_Part(int read,int x,int y)
 }
 
 
-int LoadMMap_Part_Sub(FILE *fp,Sint16 **p)    //²¿·Ö¶ÁÈ¡Ã¿¸öÖ÷µØÍ¼
+int LoadMMap_Part_Sub(FILE *fp,Sint16 **p)    //éƒ¨åˆ†è¯»å–æ¯ä¸ªä¸»åœ°å›¾
 {
 	int i;
 
-	if(g_LoadMMapType==1){   //·½·¨1£º¶ÁÈ¡µ±Ç°¸½½üĞĞ
+	if(g_LoadMMapType==1){   //æ–¹æ³•1ï¼šè¯»å–å½“å‰é™„è¿‘è¡Œ
 		if(*p==NULL){
 			*p=(Sint16*) malloc(4*M_Scope*M_XMax*2);
 		}
 
-		if(old_M_Y0<0){    //Ã»ÓĞÒÔÇ°µÄÊı¾İ£¬µÚÒ»´Î¶ÁÈ¡¡£     
+		if(old_M_Y0<0){    //æ²¡æœ‰ä»¥å‰çš„æ•°æ®ï¼Œç¬¬ä¸€æ¬¡è¯»å–ã€‚     
 	        fseek(fp,M_Y0*M_XMax*2,SEEK_SET); 
             fread(*p,2,4*M_Scope*M_XMax,fp);  
 		}
 		else{
 			int dy=M_Y0-old_M_Y0;
-			if(dy>0){    //×ø±êÔö¼Ó
-				memmove(*p,*p+dy*M_XMax,(4*M_Scope-dy)*M_XMax*2);    //¸´ÖÆÔ­À´ÄÚ´æÖĞÊı¾İµ½ĞÂµØÖ·
+			if(dy>0){    //åæ ‡å¢åŠ 
+				memmove(*p,*p+dy*M_XMax,(4*M_Scope-dy)*M_XMax*2);    //å¤åˆ¶åŸæ¥å†…å­˜ä¸­æ•°æ®åˆ°æ–°åœ°å€
 				fseek(fp,(4*M_Scope+old_M_Y0)*M_XMax*2,SEEK_SET); 
-				fread(*p+(4*M_Scope-dy)*M_XMax,2,dy*M_XMax,fp);      //´ÓÎÄ¼ş¶ÁÈ¡Ê£ÓàĞèÒªµÄÊı¾İ
+				fread(*p+(4*M_Scope-dy)*M_XMax,2,dy*M_XMax,fp);      //ä»æ–‡ä»¶è¯»å–å‰©ä½™éœ€è¦çš„æ•°æ®
 			}
 			else{
 				memmove(*p+(-dy)*M_XMax,*p,(4*M_Scope+dy)*M_XMax*2);
@@ -226,19 +227,19 @@ int LoadMMap_Part_Sub(FILE *fp,Sint16 **p)    //²¿·Ö¶ÁÈ¡Ã¿¸öÖ÷µØÍ¼
 			}
 		}
 	}
-	else if(g_LoadMMapType==2){  //·½·¨1£º¶ÁÈ¡µ±Ç°¸½½üĞĞºÍÁĞ
+	else if(g_LoadMMapType==2){  //æ–¹æ³•1ï¼šè¯»å–å½“å‰é™„è¿‘è¡Œå’Œåˆ—
 		if(*p==NULL){
 			*p=(Sint16*) malloc(4*M_Scope*4*M_Scope*2);
 		}
  
-		//¶ÁÈ¡µ±Ç°¸½½üĞĞÊı¾İµ½ÁÙÊ±ÄÚ´æ¡£ÔÚÊÖ»úÉÏ£¬ÕâÑù×ö±ÈÖğĞĞ¶ÁÈ¡Ò»¶ÎÊı¾İËÙ¶È¿ìºÜ¶à(ÄÑµÀflash¶ÁÈ¡ºÍÓ²ÅÌ²»Ò»Ñù£¿)
+		//è¯»å–å½“å‰é™„è¿‘è¡Œæ•°æ®åˆ°ä¸´æ—¶å†…å­˜ã€‚åœ¨æ‰‹æœºä¸Šï¼Œè¿™æ ·åšæ¯”é€è¡Œè¯»å–ä¸€æ®µæ•°æ®é€Ÿåº¦å¿«å¾ˆå¤š(éš¾é“flashè¯»å–å’Œç¡¬ç›˜ä¸ä¸€æ ·ï¼Ÿ)
 		if(tmp_M==NULL){
 			tmp_M=(Sint16*) malloc(4*M_Scope*M_XMax*2);
 		}
 		fseek(fp,M_Y0*M_XMax*2,SEEK_SET);	 
 	    fread(tmp_M,2,4*M_Scope*M_XMax,fp);	 
 
-		//¸´ÖÆĞèÒªµÄÊı¾İ
+		//å¤åˆ¶éœ€è¦çš„æ•°æ®
 		for(i=0;i<4*M_Scope;i++){
 			memcpy(*p+i*4*M_Scope,tmp_M+i*M_XMax+M_X0,4*M_Scope*2);
 		}
@@ -250,7 +251,7 @@ int LoadMMap_Part_Sub(FILE *fp,Sint16 **p)    //²¿·Ö¶ÁÈ¡Ã¿¸öÖ÷µØÍ¼
 
 
 
-// ÊÍ·ÅÖ÷µØÍ¼Êı¾İ
+// é‡Šæ”¾ä¸»åœ°å›¾æ•°æ®
 int JY_UnloadMMap(void)
 {
     SafeFree(pEarth);
@@ -285,7 +286,7 @@ int JY_UnloadMMap(void)
     return 0;
 }
 
-// µÃµ½Ö÷µØÍ¼Êı¾İÆ«ÒÆµØÖ·¡£Èç¹û³¬³öµ±Ç°ÄÚ´æµÄÊı¾İ·¶Î§£¬·µ»Ø-1
+// å¾—åˆ°ä¸»åœ°å›¾æ•°æ®åç§»åœ°å€ã€‚å¦‚æœè¶…å‡ºå½“å‰å†…å­˜çš„æ•°æ®èŒƒå›´ï¼Œè¿”å›-1
 static int GetMMapOffset(int x,int y)
 {
 	int s;
@@ -310,7 +311,7 @@ static int GetMMapOffset(int x,int y)
 	return s;
 }
 
-// È¡Ö÷µØÍ¼Êı¾İ 
+// å–ä¸»åœ°å›¾æ•°æ® 
 // flag  0 earth, 1 surface, 2 building, 3 buildx, 4 buildy
 int JY_GetMMap(int x, int y , int flag)
 {
@@ -345,7 +346,7 @@ int JY_GetMMap(int x, int y , int flag)
 
 }
 
-// ´æÖ÷µØÍ¼Êı¾İ 
+// å­˜ä¸»åœ°å›¾æ•°æ® 
 // flag  0 earth, 1 surface, 2 building, 3 buildx, 4 buildy
 int JY_SetMMap(short x, short y , int flag, short v)
 {
@@ -379,9 +380,9 @@ int JY_SetMMap(short x, short y , int flag, short v)
 }
 
 
-// Ö÷µØÍ¼½¨ÖşÅÅĞò 
-// x,y Ö÷½Ç×ø±ê
-// Mypic Ö÷½ÇÌùÍ¼±àºÅ
+// ä¸»åœ°å›¾å»ºç­‘æ’åº 
+// x,y ä¸»è§’åæ ‡
+// Mypic ä¸»è§’è´´å›¾ç¼–å·
 int BuildingSort(short x, short y, short Mypic)
 {
 
@@ -462,7 +463,7 @@ int BuildingSort(short x, short y, short Mypic)
 
 
 
-// »æÖÆÖ÷µØÍ¼
+// ç»˜åˆ¶ä¸»åœ°å›¾
 int JY_DrawMMap(int x, int y, int Mypic)
 {
 
@@ -485,11 +486,11 @@ int JY_DrawMMap(int x, int y, int Mypic)
 
 	    BuildNumber=0;
 
-		if(g_LoadMMapType!=0){   //²¿·Ö¶ÁÈ¡Ö÷µØÍ¼£¬Ôò¸ù¾İĞèÒªÖØĞÂ¶ÁÈ¡Êı¾İ
+		if(g_LoadMMapType!=0){   //éƒ¨åˆ†è¯»å–ä¸»åœ°å›¾ï¼Œåˆ™æ ¹æ®éœ€è¦é‡æ–°è¯»å–æ•°æ®
 	        LoadMMap_Part(0,x,y);
 		}
 
-		//½¨ÖşÅÅĞò
+		//å»ºç­‘æ’åº
 	    BuildingSort((short)x, (short)y, (short)Mypic);
 
 		JY_FillColor(0,0,0,0,0);
@@ -531,7 +532,7 @@ int JY_DrawMMap(int x, int y, int Mypic)
 }
 
 
-//¶ÁÈ¡S*D*
+//è¯»å–S*D*
 int JY_LoadSMap(const char *Sfilename,const char*tmpfilename, int num,int x_max,int y_max,
 				const char *Dfilename,int d_num1,int d_num2)
 {
@@ -542,8 +543,8 @@ int JY_LoadSMap(const char *Sfilename,const char*tmpfilename, int num,int x_max,
 	S_YMax=y_max;
     S_Num=num;
 
-	//¶ÁÈ¡SÎÄ¼ş
-    if(g_LoadFullS==0){     //¶ÁÈ¡sµ½ÁÙÊ±ÎÄ¼ş
+	//è¯»å–Sæ–‡ä»¶
+    if(g_LoadFullS==0){     //è¯»å–såˆ°ä¸´æ—¶æ–‡ä»¶
         strcpy(TempS_filename,tmpfilename);  
         if(pS==NULL)
             pS=(Sint16*) malloc(S_XMax*S_YMax*6*2);
@@ -569,7 +570,7 @@ int JY_LoadSMap(const char *Sfilename,const char*tmpfilename, int num,int x_max,
         fclose(fp2);
         currentS=-1;
     }
-    else{      //È«²¿¶ÁÈëÄÚ´æ
+    else{      //å…¨éƒ¨è¯»å…¥å†…å­˜
         if(pS==NULL)
             pS=(Sint16*) malloc(S_XMax*S_YMax*6*2*S_Num);
 
@@ -589,7 +590,7 @@ int JY_LoadSMap(const char *Sfilename,const char*tmpfilename, int num,int x_max,
     D_Num1=d_num1;
 	D_Num2=d_num2;
 	
-    //¶ÁÈ¡DÎÄ¼ş
+    //è¯»å–Dæ–‡ä»¶
   
 
 	if(pD==NULL)
@@ -609,7 +610,7 @@ int JY_LoadSMap(const char *Sfilename,const char*tmpfilename, int num,int x_max,
     return 0;
 }
 
-//±£´æS*D*
+//ä¿å­˜S*D*
 int JY_SaveSMap(const char *Sfilename,const char *Dfilename)
 {
     FILE *fp,*fp2;
@@ -618,7 +619,7 @@ int JY_SaveSMap(const char *Sfilename,const char *Dfilename)
 	if(pS==NULL)
 		return 0;
 
-    if(g_LoadFullS==0){    //¶ÁÈ¡²¿·ÖSÊ±µÄ±£´æ
+    if(g_LoadFullS==0){    //è¯»å–éƒ¨åˆ†Sæ—¶çš„ä¿å­˜
         WriteS(currentS);
         currentS=-1;
 	    if((fp=fopen(Sfilename,"wb"))==NULL){
@@ -669,7 +670,7 @@ int JY_UnloadSMap()
     return 0;
 }
 
-//´ÓÁÙÊ±ÎÄ¼şÖĞ¶ÁÈ¡³¡¾°idµÄSÊı¾İµ½ÄÚ´æ
+//ä»ä¸´æ—¶æ–‡ä»¶ä¸­è¯»å–åœºæ™¯idçš„Sæ•°æ®åˆ°å†…å­˜
 int ReadS(int id)
 {
     FILE *fp;
@@ -687,7 +688,7 @@ int ReadS(int id)
     return 0;
 }
 
-//´ÓÄÚ´æÖĞĞ´Èë³¡¾°idµÄSÊı¾İµ½ÁÙÊ±ÎÄ¼ş
+//ä»å†…å­˜ä¸­å†™å…¥åœºæ™¯idçš„Sæ•°æ®åˆ°ä¸´æ—¶æ–‡ä»¶
 int WriteS(int id)
 {
     FILE *fp;
@@ -705,7 +706,7 @@ int WriteS(int id)
     return 0;
 }
 
-//È¡sµÄÖµ
+//å–sçš„å€¼
 int JY_GetS(int id,int x,int y,int level)
 {
     int s;
@@ -728,7 +729,7 @@ int JY_GetS(int id,int x,int y,int level)
 
 }
 
-//´æSµÄÖµ
+//å­˜Sçš„å€¼
 int JY_SetS(int id,int x,int y,int level,int v)
 {
     FILE *fp;
@@ -763,7 +764,7 @@ int JY_SetS(int id,int x,int y,int level,int v)
 
 }
 
-//È¡D*
+//å–D*
 int JY_GetD(int Sceneid,int id,int i)
 {
     int s;
@@ -777,7 +778,7 @@ int JY_GetD(int Sceneid,int id,int i)
 	return *(pD+s);
 }
 
-//´æD*
+//å­˜D*
 int JY_SetD(int Sceneid,int id,int i,int v)
 {
     int s;
@@ -794,7 +795,7 @@ int JY_SetD(int Sceneid,int id,int i,int v)
 }
 
 
-// »æÖÆ³¡¾°µØÍ¼
+// ç»˜åˆ¶åœºæ™¯åœ°å›¾
 int JY_DrawSMap(int sceneid,int x, int y,int xoff,int yoff, int Mypic)
 {
 
@@ -834,7 +835,7 @@ int JY_DrawSMap(int sceneid,int x, int y,int xoff,int yoff, int Mypic)
 				if( (xx>=0) && (xx<S_XMax) && (yy>=0) && (yy<S_YMax) ){
 	                int d0=JY_GetS(sceneid,xx,yy,0);
 					if(d0>0){
-	                      JY_LoadPic(0,d0,x1,y1,0,0);             //µØÃæ
+	                      JY_LoadPic(0,d0,x1,y1,0,0);             //åœ°é¢
 					}
 				}
 			}
@@ -859,19 +860,19 @@ int JY_DrawSMap(int sceneid,int x, int y,int xoff,int yoff, int Mypic)
 	                int d5=JY_GetS(sceneid,xx,yy,5);
 
 					if(d1>0){
-	                      JY_LoadPic(0,d1,x1,y1-d4,0,0);           //½¨Öş
+	                      JY_LoadPic(0,d1,x1,y1-d4,0,0);           //å»ºç­‘
 					}
 					if(d2>0){
-	                     JY_LoadPic(0,d2,x1,y1-d5,0,0);          //¿ÕÖĞ
+	                     JY_LoadPic(0,d2,x1,y1-d5,0,0);          //ç©ºä¸­
 					}
-					if(d3>=0){           // ÊÂ¼ş
+					if(d3>=0){           // äº‹ä»¶
 						int picnum=JY_GetD(sceneid,d3,7);
 						if(picnum>0){
 	                       JY_LoadPic(0,picnum,x1,y1-d4,0,0);
 						}
 					}
 
-					if( (i1==-xoff) && (j1==-yoff) ){  //Ö÷½Ç
+					if( (i1==-xoff) && (j1==-yoff) ){  //ä¸»è§’
 	                       JY_LoadPic(0,Mypic*2,x1,y1-d4,0,0);
 
 	                       px = x1;
@@ -928,17 +929,17 @@ int JY_DrawSMap(int sceneid,int x, int y,int xoff,int yoff, int Mypic)
 	    return 0;
 }
 
-//¼ÓÔØÕ½¶·µØÍ¼
-// WarIDXfilename/WarGRPfilename Õ½¶·µØÍ¼idx/grpÎÄ¼şÃû
-// mapid Õ½¶·µØÍ¼±àºÅ
-// num Õ½¶·µØÍ¼Êı¾İ²ãÊı   Ó¦Îª6
-//         0²ã µØÃæÊı¾İ
-//         1²ã ½¨Öş
-//         2²ã Õ½¶·ÈËÕ½¶·±àºÅ
-//         3²ã ÒÆ¶¯Ê±ÏÔÊ¾¿ÉÒÆ¶¯µÄÎ»ÖÃ
-//         4²ã ÃüÖĞĞ§¹û
-//         5²ã Õ½¶·ÈË¶ÔÓ¦µÄÌùÍ¼
-// x_max,x_max   µØÍ¼´óĞ¡
+//åŠ è½½æˆ˜æ–—åœ°å›¾
+// WarIDXfilename/WarGRPfilename æˆ˜æ–—åœ°å›¾idx/grpæ–‡ä»¶å
+// mapid æˆ˜æ–—åœ°å›¾ç¼–å·
+// num æˆ˜æ–—åœ°å›¾æ•°æ®å±‚æ•°   åº”ä¸º6
+//         0å±‚ åœ°é¢æ•°æ®
+//         1å±‚ å»ºç­‘
+//         2å±‚ æˆ˜æ–—äººæˆ˜æ–—ç¼–å·
+//         3å±‚ ç§»åŠ¨æ—¶æ˜¾ç¤ºå¯ç§»åŠ¨çš„ä½ç½®
+//         4å±‚ å‘½ä¸­æ•ˆæœ
+//         5å±‚ æˆ˜æ–—äººå¯¹åº”çš„è´´å›¾
+// x_max,x_max   åœ°å›¾å¤§å°
 int JY_LoadWarMap(const char *WarIDXfilename,const char *WarGRPfilename, int mapid,int num, int x_max,int y_max)
 {
     FILE *fp;
@@ -958,11 +959,11 @@ int JY_LoadWarMap(const char *WarIDXfilename,const char *WarGRPfilename, int map
 		return 0;
 	}
 
-	if(mapid==0){        //µÚ0¸öµØÍ¼£¬´Ó0¿ªÊ¼¶Á
+	if(mapid==0){        //ç¬¬0ä¸ªåœ°å›¾ï¼Œä»0å¼€å§‹è¯»
 		p=0;
 	}
 	else{
-		if((fp=fopen(WarIDXfilename,"rb"))==NULL){      //¶ÁidxÎÄ¼ş
+		if((fp=fopen(WarIDXfilename,"rb"))==NULL){      //è¯»idxæ–‡ä»¶
             JY_Error("file not open ---%s",WarIDXfilename);
 		    return 0;
 		}
@@ -993,7 +994,7 @@ int JY_UnloadWarMap()
 }
 
 
-//È¡Õ½¶·µØÍ¼Êı¾İ
+//å–æˆ˜æ–—åœ°å›¾æ•°æ®
 int JY_GetWarMap(int x,int y,int level)
 {
     int s;
@@ -1009,7 +1010,7 @@ int JY_GetWarMap(int x,int y,int level)
 
 }
 
-//´æÕ½¶·µØÍ¼Êı¾İ
+//å­˜æˆ˜æ–—åœ°å›¾æ•°æ®
 int JY_SetWarMap(int x,int y,int level,int v)
 {
    int s;
@@ -1027,7 +1028,7 @@ int JY_SetWarMap(int x,int y,int level,int v)
 
 }
 
-//ÉèÖÃÄ³²ãÕ½¶·µØÍ¼Îª¸ø¶¨Öµ
+//è®¾ç½®æŸå±‚æˆ˜æ–—åœ°å›¾ä¸ºç»™å®šå€¼
 int JY_CleanWarMap(int level,int v)
 {
     short *p=pWar+War_XMax*War_YMax*level;
@@ -1039,13 +1040,13 @@ int JY_CleanWarMap(int level,int v)
     return 0;  
 } 
 
-// »æÖÆÕ½¶·µØÍ¼
-// flag=0  »æÖÆ»ù±¾Õ½¶·µØÍ¼
-//     =1  ÏÔÊ¾¿ÉÒÆ¶¯µÄÂ·¾¶£¬(v1,v2)µ±Ç°ÒÆ¶¯×ø±ê£¬°×É«±³¾°(Ñ©µØÕ½¶·)
-//     =2  ÏÔÊ¾¿ÉÒÆ¶¯µÄÂ·¾¶£¬(v1,v2)µ±Ç°ÒÆ¶¯×ø±ê£¬ºÚÉ«±³¾°
-//     =3  ÃüÖĞµÄÈËÎïÓÃ°×É«ÂÖÀªÏÔÊ¾
-//     =4  Õ½¶·¶¯×÷¶¯»­  v1 Õ½¶·ÈËÎïpic, v2ÌùÍ¼ËùÊôµÄ¼ÓÔØÎÄ¼şid
-//                       v3 Îä¹¦Ğ§¹ûpic  -1±íÊ¾Ã»ÓĞÎä¹¦Ğ§¹û
+// ç»˜åˆ¶æˆ˜æ–—åœ°å›¾
+// flag=0  ç»˜åˆ¶åŸºæœ¬æˆ˜æ–—åœ°å›¾
+//     =1  æ˜¾ç¤ºå¯ç§»åŠ¨çš„è·¯å¾„ï¼Œ(v1,v2)å½“å‰ç§»åŠ¨åæ ‡ï¼Œç™½è‰²èƒŒæ™¯(é›ªåœ°æˆ˜æ–—)
+//     =2  æ˜¾ç¤ºå¯ç§»åŠ¨çš„è·¯å¾„ï¼Œ(v1,v2)å½“å‰ç§»åŠ¨åæ ‡ï¼Œé»‘è‰²èƒŒæ™¯
+//     =3  å‘½ä¸­çš„äººç‰©ç”¨ç™½è‰²è½®å»“æ˜¾ç¤º
+//     =4  æˆ˜æ–—åŠ¨ä½œåŠ¨ç”»  v1 æˆ˜æ–—äººç‰©pic, v2è´´å›¾æ‰€å±çš„åŠ è½½æ–‡ä»¶id
+//                       v3 æ­¦åŠŸæ•ˆæœpic  -1è¡¨ç¤ºæ²¡æœ‰æ­¦åŠŸæ•ˆæœ
 
 int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3, int v4,int v5, int ex, int ey)
 {
@@ -1073,7 +1074,7 @@ int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3, int v4,int v5, i
 		JY_FillColor(0,0,0,0,0);
 
 
-	    // »æÕ½¶·µØÃæ
+	    // ç»˜æˆ˜æ–—åœ°é¢
 		for(j=0;j<=2*jend-2*jstart+g_WMapAddY;j++){
 		    for(i=istart;i<=iend;i++){
 	            i1=i+j/2+jstart;
@@ -1089,9 +1090,9 @@ int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3, int v4,int v5, i
 
 
 	                if(num>0)
-	 					JY_LoadPic(0,num,x1,y1,0,0);     //µØÃæ
+	 					JY_LoadPic(0,num,x1,y1,0,0);     //åœ°é¢
 
-					if(n > 0)		//»æÖÆ¼ªĞ×µØ
+					if(n > 0)		//ç»˜åˆ¶å‰å‡¶åœ°
 					{
 						static SDL_Texture* tmpTex[4] = {0};
 						SDL_Texture* tex = NULL;
@@ -1122,7 +1123,7 @@ int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3, int v4,int v5, i
 
 
 
-	if( (flag==1) || (flag==2) ){     //ÔÚµØÃæÉÏ»æÖÆÒÆ¶¯·¶Î§
+	if( (flag==1) || (flag==2) ){     //åœ¨åœ°é¢ä¸Šç»˜åˆ¶ç§»åŠ¨èŒƒå›´
 		for(j=0;j<=2*jend-2*jstart+g_WMapAddY;j++){
 		    for(i=istart;i<=iend;i++){
 	            i1=i+j/2+jstart;
@@ -1178,7 +1179,7 @@ int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3, int v4,int v5, i
 		}
 	}
 
-	    // »æÕ½¶·½¨ÖşºÍÈË
+	    // ç»˜æˆ˜æ–—å»ºç­‘å’Œäºº
 		for(j=0;j<=2*jend-2*jstart+g_WMapAddY;j++){
 		    for(i=istart;i<=iend;i++){
 	            i1=i+j/2+jstart;
@@ -1190,27 +1191,27 @@ int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3, int v4,int v5, i
 				yy=y+j1 ;
 				if( (xx>=0) && (xx<War_XMax) && (yy>=0) && (yy<War_YMax) ){
 									int d4=0;
-	                int num=JY_GetWarMap(xx,yy,1);    //  ½¨Öş
+	                int num=JY_GetWarMap(xx,yy,1);    //  å»ºç­‘
 	                if(v4 >= 0)
 										d4=JY_GetS(v4,xx,yy,4);
 	                if(num>0)
 	                	JY_LoadPic(0,num,x1,y1-d4,0,0);
 
 
-					num=JY_GetWarMap(xx,yy,2);        // Õ½¶·ÈË
+					num=JY_GetWarMap(xx,yy,2);        // æˆ˜æ–—äºº
 					if(num>=0){
-	          int pic=JY_GetWarMap(xx,yy,5);  // ÈËÌùÍ¼
+	          int pic=JY_GetWarMap(xx,yy,5);  // äººè´´å›¾
 						if(pic>=0){
 							switch(flag){
 							case 0:
 							case 1:
 							case 2:
-	                        case 5: //ÈËÎï³£¹æÏÔÊ¾
+	                        case 5: //äººç‰©å¸¸è§„æ˜¾ç¤º
 								JY_LoadPic(0,pic,x1,y1-d4,0,0);
 								break;
 							case 3:
-								if(JY_GetWarMap(xx,yy,4)>1)   //ÃüÖĞ
-	  							    JY_LoadPic(0,pic,x1,y1-d4,4+2,255);  //±äºÚ
+								if(JY_GetWarMap(xx,yy,4)>1)   //å‘½ä¸­
+	  							    JY_LoadPic(0,pic,x1,y1-d4,4+2,255);  //å˜é»‘
 								else
 								    JY_LoadPic(0,pic,x1,y1-d4,0,0);
 
@@ -1222,7 +1223,7 @@ int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3, int v4,int v5, i
 	                                else
 	 							        JY_LoadPic(v2,v1,x1,y1-d4,0,0);
 	                            }
-								  else if(pic < 1000)		//ºÏ»÷¶¯»­
+								  else if(pic < 1000)		//åˆå‡»åŠ¨ç”»
 								  {
 	              					JY_LoadPic(4+JY_GetWarMap(xx,yy,2),pic,x1,y1-d4,0,0);
 								  }
@@ -1235,7 +1236,7 @@ int JY_DrawWarMap(int flag, int x, int y, int v1,int v2,int v3, int v4,int v5, i
 						}
 					}
 
-	                if(flag==4 && v3>=0 && v5 >= 0){   //Îä¹¦Ğ§¹û
+	                if(flag==4 && v3>=0 && v5 >= 0){   //æ­¦åŠŸæ•ˆæœ
 						if(ex >= 0 && ey >= 0)
 						{
 							if(ex == xx && ey == yy)
