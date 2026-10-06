@@ -342,13 +342,19 @@ int main(int argc, char *argv [])
 	lua_setglobal(pL_main, "config");
 
 	JY_Debug("Lua_Config();");
-	Lua_Config(pL_main, _(CONFIG_FILE));
+	Lua_Config(pL_main, _(CONFIG_FILE));        // lua 설정 읽기
+
+	// ⭐ [여기 추가] Lua 설정이나 외부 파일 값과 상관없이 스위치 해상도를 강제로 1280x720으로 고정
+	g_ScreenW = 1280;
+	g_ScreenH = 720;
+	device_w = 1280;
+	device_h = 720;
 
 	JY_Debug("InitSDL();");
-	InitSDL();
+	InitSDL();            // 이 함수가 실행될 때 위에서 지정한 1280x720 크기로 창과 렌더러가 생성됩니다.
 
 	JY_Debug("InitGame();");
-	InitGame();
+	InitGame();           // 게임 데이터 초기화
 
 	g_WarMoveTex[0] = createPolygonTexture(255, 255, 255, 128);
 	g_WarMoveTex[1] = createPolygonTexture(255, 255, 255, 64);
