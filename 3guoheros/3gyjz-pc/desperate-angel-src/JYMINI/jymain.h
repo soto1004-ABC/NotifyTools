@@ -3,6 +3,9 @@
 #define _JYMAIN_H_H
 
 #include "config.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_ttf.h"
