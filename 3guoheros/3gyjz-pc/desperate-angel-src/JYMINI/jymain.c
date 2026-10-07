@@ -358,7 +358,12 @@ int main(int argc, char *argv [])
 	g_WarMoveTex[3] = createPolygonTexture(0, 0, 0, 64);
 
 	JY_Debug("LoadMB();");
+#ifdef __SWITCH__
+	// 스위치에서는 절대 경로로 텍스트 변환 데이터 파일을 강제 로드
+	LoadMB("sdmc:/switch/3guohero/hzmb.dat"); 
+#else
 	LoadMB(_(HZMB_FILE));
+#endif
 
 	JY_Debug("Lua_Main();");
 	Lua_Main(pL_main);
