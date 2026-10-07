@@ -313,10 +313,6 @@ int main_android()
 // 主程序入口
 int main(int argc, char *argv [])
 {
-	// 스위치 환경에서 SD 카드 내 게임 폴더로 작업 경로 강제 고정
-#ifdef __SWITCH__
-	chdir("sdmc:/switch/3guohero");
-#endif
 
 	lua_State *pL_main;
 
