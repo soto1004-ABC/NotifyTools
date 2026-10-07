@@ -360,7 +360,7 @@ int main(int argc, char *argv [])
 	JY_Debug("LoadMB();");
 #ifdef __SWITCH__
 	// 스위치에서는 절대 경로로 텍스트 변환 데이터 파일을 강제 로드
-	LoadMB("sdmc:/switch/3guohero/hzmb.dat"); 
+	LoadMB("sdmc:/switch/yingjie4/game/hzmb.dat"); 
 #else
 	LoadMB(_(HZMB_FILE));
 #endif
