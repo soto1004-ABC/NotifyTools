@@ -1,3 +1,17 @@
+# Makefile 상단에 앱 메타데이터 변수 추가
+APP_TITLE := 삼국지 영걸전
+APP_AUTHOR := MyPort
+APP_VERSION := 1.0.0
+ICON := icon.jpg
+
+# 기존 $(TARGET).nro 빌드 부분을 찾아 아래처럼 변경 (nacp 및 icon 플래그 추가)
+$(TARGET).nro: $(TARGET).elf $(TARGET).nacp
+	elf2nro $< $@ --nacp=$(TARGET).nacp --icon=$(ICON)
+
+# NACP 생성 규칙 추가
+$(TARGET).nacp:
+	nacptool --create "$(APP_TITLE)" "$(APP_AUTHOR)" "$(APP_VERSION)" $@
+
 # --- 스위치 전용 룰 및 컴파일러 불러오기 ---
 ifeq ($(strip $(DEVKITPRO)),)
 $(error "Please set DEVKITPRO in your environment.")
